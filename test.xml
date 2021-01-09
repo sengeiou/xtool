@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project title="Smart-Watch Factory Test">
+	<Groups name="STP protocol test">
+		<Content name="STP protocol test 1">
+			<WaitTimeout>3000</WaitTimeout>
+			<Major>0x01</Major>
+			<Items>
+				<Item>
+					<Minor>0x01</Minor>
+					<Length>0</Length>
+					<Data></Data>
+					<Expect>0</Expect>
+				</Item>
+			</Items>
+		</Content>
+		<Content name="Watch g-sensor test">
+			<WaitTimeout>1000</WaitTimeout>
+			<Major>0x02</Major>
+			<Items>
+				<Item>
+					<Minor>0x10</Minor>
+					<Length>0</Length>
+					<Data></Data>
+					<Expect>0</Expect>
+				</Item>
+			</Items>
+		</Content>
+		<Content name="Watch m-sensor test">
+			<WaitTimeout>1000</WaitTimeout>
+			<Major>0x02</Major>
+			<Items>
+				<Item>
+					<Minor>0x13</Minor>
+					<Length>0</Length>
+					<Data></Data>
+					<Expect>0</Expect>
+				</Item>
+			</Items>
+		</Content>
+		<Content name="Watch screen test">
+			<WaitTimeout>1000</WaitTimeout>
+			<Major>0x02</Major>
+			<Items>
+				<Item>
+					<Minor>0x13</Minor>
+					<Length>0</Length>
+					<Data></Data>
+					<Expect>0</Expect>
+				</Item>
+			</Items>
+		</Content>
+	</Groups>
+</Project>

@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+   <file>forms/xtoolform.ui</file>
+   <file>forms/serialform.ui</file>
+   <file>forms/transferform.ui</file>
+</qresource>
+</RCC>
