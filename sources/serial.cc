@@ -8,7 +8,8 @@ SerialThread::SerialThread(QObject *parent)
     : QThread(parent), actived_(0), port_updated_(0),
       list_mutex_(new QMutex), send_timeout_(3000)
 {
-
+    tx_queue_ = new ByteArrayList();
+    node_pool_ = new ByteArrayNodePool(8, 1024);
 }
 
 SerialThread::~SerialThread()
@@ -16,6 +17,9 @@ SerialThread::~SerialThread()
     Stop();
     if (list_mutex_)
         delete list_mutex_;
+
+    delete tx_queue_;
+    delete node_pool_;
 }
 
 bool SerialThread::Start(const QString &portname,
@@ -42,8 +46,10 @@ void SerialThread::Stop()
 
 bool SerialThread::SendTo(const QByteArray &data)
 {
+    ByteArrayNode *node = AllocateNode(true);
+    node->data()->append(data);
     list_mutex_->lock();
-    tx_list_.append(data);
+    tx_queue_->Append(node);
     list_mutex_->unlock();
     return true;
 }
@@ -59,15 +65,12 @@ _reinit:
         serial.close();
         curr_port = port_name_;
     }
-
-    //Set serial port name and check status
     serial.setPortName(curr_port);
     if (serial.isOpen()) {
         serial.clear();
         serial.close();
     }
 
-    //Set serial port format
     serial.setBaudRate(param_.baudrate);
     serial.setDataBits(param_.data_bits);
     serial.setStopBits(param_.stop_bits);
@@ -78,30 +81,38 @@ _reinit:
         return;
     }
 
+    emit this->Connected("Connected");
     while (actived_.load()) {
         list_mutex_->lock();
-        if (!tx_list_.isEmpty()) {
-            const QByteArray &tx_data = tx_list_.takeFirst();
+        if (!tx_queue_->empty()) {
+            ByteArrayNode *tx_node = tx_queue_->TakeFirst();
             list_mutex_->unlock();
-
-            serial.write(tx_data);
+            serial.write(*(tx_node->data()));
             if (!serial.waitForBytesWritten(send_timeout_))
                 emit this->Error("Send timeout");
+            tx_node->Release();
         } else {
             list_mutex_->unlock();
         }
 
         if (serial.waitForReadyRead(10)) {
-            QByteArray recv_data = serial.readAll();
-            while (serial.waitForReadyRead(10))
-                recv_data += serial.readAll();
-            emit this->Received(recv_data);
+            ByteArrayNode *rx_node = AllocateNode(false);
+            QByteArray *rx_buf = rx_node->data();
+            if (rx_buf) {
+                *rx_buf = serial.readAll();
+                while (serial.waitForReadyRead(10))
+                    (*rx_buf)+= serial.readAll();
+                emit this->RecvMessage(rx_node);
+            } else {
+                //Drop messages if buffer is no enought
+                serial.readAll();
+            }
         }
-
         if (port_updated_.load())
             goto _reinit;
     }
 
     serial.close();
+    emit this->Disconnected("Disconnected");
 }
 

@@ -167,8 +167,6 @@ void XmlParse::ParseItemNode(QXmlStreamReader *reader,
                 goto _next;
             } else if (str == "Minor") {
                 minor->minor = reader->readElementText();
-            } else if (str == "Length") {
-                minor->length = reader->readElementText();
             } else if (str == "Data") {
                 minor->data = reader->readElementText();
             } else if (str == "Expect") {

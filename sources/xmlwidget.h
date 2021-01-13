@@ -25,12 +25,21 @@ public:
     QList<XmlDataNode::MinorItem *> &minor() {
         return data_->minor();
     }
+
+    void set_breakpoint(bool enable) {
+        breakpoint_enabled_ = enable;
+    }
+
+    bool breakpoint() const {
+        return breakpoint_enabled_;
+    }
+
 private slots:
     void OnItemActived();
 
 private:
     XmlDataNode *data_;
-    bool need_stop_;
+    bool breakpoint_enabled_;
 };
 
 

@@ -106,8 +106,15 @@ void SerialForm::OnPushButtonClicked()
         serial = master_->serial_;
     }
 
+    connect(serial, &SerialThread::RecvMessage,
+            master_, &XToolForm::OnReceiveMessage);
+    connect(serial, &SerialThread::Connected,
+            master_, &XToolForm::PortChangedStatus);
+    connect(serial, &SerialThread::Disconnected,
+            master_, &XToolForm::PortChangedStatus);
     if (!serial->Start(port_->currentText(), param))
         delete serial;
+
 _close:
     this->close();
 }

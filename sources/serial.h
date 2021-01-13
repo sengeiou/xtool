@@ -8,9 +8,9 @@
 
 #include <QSerialPort>
 
-//class QSerialPort;
-class QMutex;
+#include "dlistbuf.h"
 
+class QMutex;
 
 class SerialThread : public QThread {
     Q_OBJECT
@@ -33,8 +33,10 @@ public:
     }
 
 signals:
+    void Connected(const QString &);
+    void Disconnected(const QString &);
     void Error(const QString &);
-    void Received(const QByteArray &);
+    void RecvMessage(ByteArrayNode *);
 
 protected:
     virtual void run() override;
@@ -43,11 +45,23 @@ private:
     void RequestUpdatePort() {
         port_updated_.store(1);
     }
+    ByteArrayNode *AllocateNode(bool wait = true) {
+        return node_pool_->Allocate(wait);
+    }
+    void ReleaseNode(ByteArrayNode *node) {
+        node_pool_->Release(node);
+    }
+
 private:
     QAtomicInt actived_;
     QAtomicInt port_updated_;
     QString port_name_;
-    QList<QByteArray> tx_list_;
+    //QList<QByteArray> tx_list_;
+
+    ByteArrayList *tx_queue_;
+    ByteArrayNodePool *node_pool_;
+
+    QByteArray rxbuf_;
     QMutex *list_mutex_;
     struct SerialParam param_;
     int send_timeout_;

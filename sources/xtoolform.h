@@ -10,6 +10,8 @@ class QPushButton;
 class QLineEdit;
 class QListView;
 class QListWidget;
+class ByteArray;
+class QTimer;
 
 class XmlParse;
 class SerialForm;
@@ -17,6 +19,8 @@ class SerialThread;
 class TransferForm;
 class QTextBrowser;
 class QListWidgetItem;
+class StpOpcode;
+class ByteArrayNode;
 
 class XToolForm : public QMainWindow
 {
@@ -27,16 +31,25 @@ public:
     explicit XToolForm(QWidget *parent = nullptr);
     ~XToolForm();
 
+    bool SendMessage(const QByteArray &buf);
+    void ClosePort();
+
 private slots:
     void OnActionConnect();
     void OnActionTransfer();
     void OnOpenFile();
-
     void OnListActived(QListWidgetItem *item);
+    void OnReceiveMessage(ByteArrayNode *);
+    void OnTimeout();
 
+    void PortChangedStatus(const QString &s);
+    void ProvideContextMenu(const QPoint &point);
 
 private:
     void CreateWidgetList();
+    bool BuildPacket(QListWidgetItem *item, QByteArray *ba, int *timeout);
+    void ExecuteCurrentItem(QListWidgetItem *item);
+    void ShowCurrentItem(QListWidgetItem *item);
 
 private:
     QString filename_;
@@ -48,9 +61,11 @@ private:
     QListWidget *list_widget_;
     QTextBrowser *text_browser_;
 
-    XmlParse *xml_;
     TransferForm *transfer_form_;
     SerialThread *serial_;
+    XmlParse *xml_;
+    StpOpcode *stp_;
+    QTimer *timer_;
 };
 
 #endif //XTOOLFORM_H_

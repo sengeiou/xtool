@@ -9,7 +9,6 @@ class XmlDataNode {
 public:
     struct MinorItem {
         QString minor;
-        QString length;
         QString data;
         QString expect;
     };

@@ -3,5 +3,8 @@
    <file>forms/xtoolform.ui</file>
    <file>forms/serialform.ui</file>
    <file>forms/transferform.ui</file>
+   <file>images/main_icon.png</file>
+   <file>images/bpon.png</file>
+   <file>images/bpoff.png</file>
 </qresource>
 </RCC>

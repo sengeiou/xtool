@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
-    <height>550</height>
+    <width>719</width>
+    <height>664</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../xtool.qrc">
+    <normaloff>:/images/main_icon.png</normaloff>:/images/main_icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -87,7 +91,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>573</width>
+     <width>719</width>
      <height>23</height>
     </rect>
    </property>
@@ -150,6 +154,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../xtool.qrc"/>
+ </resources>
  <connections/>
 </ui>
