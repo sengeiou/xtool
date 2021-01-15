@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QListWidget>
 #include <QTextBrowser>
+#include <QCheckBox>
 #include <QByteArray>
 #include <QTimer>
 
@@ -26,9 +27,15 @@ XToolForm::XToolForm(QWidget *parent)
       serial_(nullptr),
       xml_(nullptr),
       stp_(new StpOpcode()),
-      timer_(new QTimer)
+      timer_(new QTimer()),
+      waiting_ack_(new QByteArray()),
+      retrans_timer_(new QTimer())
 {
     QUiLoader loader;
+
+    waiting_ack_->resize(1024);
+    timer_->setSingleShot(true);
+    retrans_timer_->setSingleShot(true);
 
     QFile file(":/forms/xtoolform.ui");
     if (!file.open(QFile::ReadOnly)) {
@@ -57,6 +64,12 @@ XToolForm::XToolForm(QWidget *parent)
     list_widget_ = findChild<QListWidget *>("listWidget");
     text_browser_ = findChild<QTextBrowser *>("textBrowser");
 
+    start_btn_ = findChild<QPushButton *>("pushButtonStart");
+    stop_btn_ = findChild<QPushButton *>("pushButtonStop");
+    stop_btn_->setEnabled(false);
+
+    skip_chkbox_ = findChild<QCheckBox *>("checkBoxSkipBox");
+
     //Connect events
     connect(exit_, &QAction::triggered,
             this, &QMainWindow::close);
@@ -68,6 +81,13 @@ XToolForm::XToolForm(QWidget *parent)
             this, &XToolForm::OnOpenFile);
     connect(list_widget_, &QListWidget::itemClicked,
             this, &XToolForm::OnListActived);
+    connect(list_widget_, &QListWidget::currentItemChanged,
+            this, &XToolForm::OnExecuteItemChanged);
+    connect(start_btn_, &QPushButton::clicked,
+            this, &XToolForm::OnStartExecute);
+    connect(stop_btn_, &QPushButton::clicked,
+            this, &XToolForm::OnStopExecute);
+
 
     //Set right-click menu for list-widget item
     list_widget_->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -75,12 +95,16 @@ XToolForm::XToolForm(QWidget *parent)
             this, &XToolForm::ProvideContextMenu);
 
     //Timer
-    connect(timer_, &QTimer::timeout, this, &XToolForm::OnTimeout);
+    connect(timer_, &QTimer::timeout,
+            this, &XToolForm::OnTimeout);
+    connect(retrans_timer_, &QTimer::timeout,
+            this, &XToolForm::OnRetransmitTimeout);
 
     widget->setWindowFlags(Qt::SubWindow);
     setWindowTitle(tr("xtool"));
     setWindowIcon(QIcon(":/images/main_icon.png"));
     //setCentralWidget(widget);
+
 }
 
 XToolForm::~XToolForm()
@@ -159,14 +183,60 @@ void XToolForm::CreateWidgetList()
     for (XmlDataNode *node : xml_->root()) {
         if (node) {
             XmlWidgetItem *item = new XmlWidgetItem(node);
+            item->setIcon(QIcon(":/images/bpoff.png"));
             list_widget_->addItem(item);
         }
     }
 }
 
+void XToolForm::StartExecute(QListWidgetItem *curr, bool walk_around)
+{
+    QBrush curr_brush(QColor(255, 0, 255, 127));
+    curr->setBackground(curr_brush);
+    start_btn_->setEnabled(false);
+    stop_btn_->setEnabled(true);
+    ExecuteCurrentItem(curr, walk_around);
+}
+
+void XToolForm::StopExecute(QListWidgetItem *curr)
+{
+    if (timer_->isActive())
+        timer_->stop();
+
+    QBrush brush(QColor(255, 255, 255));
+    curr->setBackground(brush);
+    stop_btn_->setEnabled(false);
+    start_btn_->setEnabled(true);
+}
+
+void XToolForm::OnStartExecute()
+{
+    StartExecute(list_widget_->currentItem(), true);
+}
+
+void XToolForm::OnStopExecute()
+{
+    StopExecute(list_widget_->currentItem());
+}
+
 void XToolForm::OnListActived(QListWidgetItem *item)
 {
     ShowCurrentItem(item);
+}
+
+void XToolForm::OnExecuteItemChanged(QListWidgetItem *curr,
+                                     QListWidgetItem *prev)
+{
+    if (stop_btn_->isEnabled()) {
+        if (prev) {
+            QBrush prev_brush(QColor(255, 255, 255));
+            prev->setBackground(prev_brush);
+        }
+        if (curr) {
+            QBrush curr_brush(QColor(255, 0, 255, 127));
+            curr->setBackground(curr_brush);
+        }
+    }
 }
 
 bool XToolForm::BuildPacket(QListWidgetItem *widget_item,
@@ -202,22 +272,21 @@ void XToolForm::ProvideContextMenu(const QPoint &point)
         return;
 
     QMenu sub_menu;
+    QAction *exec_action = sub_menu.addAction("Execute");
     sub_menu.addSeparator();
-    sub_menu.addAction("Execute");
-    sub_menu.addSeparator();
-    sub_menu.addAction("BreakPoint");
+    QAction *bkpt_action =sub_menu.addAction("BreakPoint");
     QAction *right_click = sub_menu.exec(QCursor::pos());
     if (right_click) {
-        if (right_click->text().contains("Execute")) {
-            ExecuteCurrentItem(curr_item);
-        } else if (right_click->text().contains("BreakPoint")) {
+        if (right_click == exec_action) {
+            StartExecute(curr_item, true);
+        } else if (right_click == bkpt_action) {
             XmlWidgetItem *item = static_cast<XmlWidgetItem *>(curr_item);
             if (!item->breakpoint()) {
                 item->set_breakpoint(true);
                 item->setIcon(QIcon(":/images/bpon.png"));
             } else {
                 item->set_breakpoint(false);
-                item->setIcon(QIcon());
+                item->setIcon(QIcon(":/images/bpoff.png"));
             }
         }
     }
@@ -225,10 +294,16 @@ void XToolForm::ProvideContextMenu(const QPoint &point)
 
 void XToolForm::OnReceiveMessage(ByteArrayNode *node)
 {
+    StopTransmitTimer();
     QByteArray *buf = node->data();
-    stp_->ProcessMessage(*buf);
     QByteArray str(buf->toHex(' ').toUpper());
     text_browser_->append("Received: " + str);
+    if (stp_->ProcessMessage(*buf) || skip_chkbox_->isChecked())
+        ExecuteNextItem();
+    else
+        StopExecute(list_widget_->currentItem());
+
+    //Release data buffer node
     node->Release();
 }
 
@@ -237,40 +312,57 @@ void XToolForm::PortChangedStatus(const QString &s)
     statusBar()->setStatusTip(s);
 }
 
-void XToolForm::OnTimeout()
+bool XToolForm::ExecuteNextItem(void)
 {
-    int curr_row = list_widget_->currentRow() + 1;
-    if (curr_row < list_widget_->count()) {
-        QListWidgetItem *curr = list_widget_->item(curr_row);
-        XmlWidgetItem *item = static_cast<XmlWidgetItem *>(curr);
-        list_widget_->setCurrentItem(curr);
-        if (!item->breakpoint()) {
-            ShowCurrentItem(curr);
-            ExecuteCurrentItem(curr);
-        }
+    int next_row = list_widget_->currentRow() + 1;
+    if (next_row < list_widget_->count()) {
+        QListWidgetItem *next = list_widget_->item(next_row);
+        XmlWidgetItem *item = static_cast<XmlWidgetItem *>(next);
+        list_widget_->setCurrentItem(next);
+        if (item->breakpoint())
+            return false;
+        ShowCurrentItem(next);
+        ExecuteCurrentItem(next, true);
+        return true;
     }
+    return false;
 }
 
-void XToolForm::ExecuteCurrentItem(QListWidgetItem *curr)
+void XToolForm::OnTimeout()
 {
-    QByteArray buffer;
+    QListWidgetItem *curr = list_widget_->currentItem();
+    if (skip_chkbox_->isChecked()) {
+        if (!ExecuteNextItem())
+            StopExecute(curr);
+    } else {
+        StopExecute(curr);
+    }
+    MarkingErrorItem(curr);
+}
+
+void XToolForm::ExecuteCurrentItem(QListWidgetItem *curr, bool walk_around)
+{
+    QByteArray *buffer = waiting_ack_;
+    buffer->clear();
     int timeout;
-    if (BuildPacket(curr, &buffer, &timeout)) {
-        QString str(buffer.toHex(' ').toUpper());
+    if (BuildPacket(curr, buffer, &timeout)) {
+        QString str(buffer->toHex(' ').toUpper());
         text_browser_->append("Packet: " + str);
-        this->SendMessage(buffer);
-        timer_->setSingleShot(true);
-        timer_->start(timeout);
+        this->SendMessage(*buffer);
+        if (walk_around)
+            timer_->start(timeout);
+        StartTransmitTimer();
     }
 }
 
 void XToolForm::ShowCurrentItem(QListWidgetItem *item)
 {
-    XmlWidgetItem *xml_widget = static_cast<XmlWidgetItem *>(item);
+    XmlWidgetItem *xml = static_cast<XmlWidgetItem *>(item);
+
     text_browser_->clear();
-    text_browser_->append("Major:" + xml_widget->major());
-    text_browser_->append("Timeout:" + xml_widget->timeout());
-    for (XmlDataNode::MinorItem *minor : xml_widget->minor()) {
+    text_browser_->append("Major:" + xml->major());
+    text_browser_->append("Timeout:" + xml->timeout());
+    for (XmlDataNode::MinorItem *minor : xml->minor()) {
         if (minor) {
            text_browser_->append("Minor: " + minor->minor);
            if (minor->data.isEmpty()) {
@@ -287,4 +379,31 @@ void XToolForm::ShowCurrentItem(QListWidgetItem *item)
     }
 }
 
+void XToolForm::MarkingErrorItem(QListWidgetItem *item)
+{
+    QBrush brush(QColor(255, 0, 0, 127));
+    item->setBackground(brush);
+}
 
+void XToolForm::OnRetransmitTimeout()
+{
+    if (retrans_count_ > 0) {
+        retrans_count_--;
+        SendMessage(*waiting_ack_);
+        retrans_timer_->start(RETRANS_TIMEOUT);
+        QString str(waiting_ack_->toHex(' ').toUpper());
+        text_browser_->append("Retransmit packet: " + str);
+    }
+}
+
+void XToolForm::StartTransmitTimer()
+{
+    retrans_count_ = RETRANS_COUNT;
+    retrans_timer_->start(RETRANS_TIMEOUT);
+}
+
+void XToolForm::StopTransmitTimer()
+{
+    if (retrans_timer_->isActive())
+        retrans_timer_->stop();
+}

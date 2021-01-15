@@ -26,11 +26,10 @@ ByteArrayNodePool::~ByteArrayNodePool()
 void ByteArrayNodePool::Destory()
 {
     std::unique_lock<std::mutex> lock(*mtx_);
-    while (!empty()) {
-        ListNode *n = list_.head();
-        list_.Remove(n);
-        delete static_cast<ByteArrayNode *>(n);
-    }
+    list_.IterateSafe([](ByteArrayNode *node) {
+        node->Remove();
+        delete node;
+    });
 }
 
 ByteArrayNode *ByteArrayNodePool::Allocate(bool wait)
@@ -44,11 +43,10 @@ ByteArrayNode *ByteArrayNodePool::Allocate(bool wait)
             cv_->wait(lock);
         } while (empty());
     }
-    ListNode *n = list_.head();
+    auto *n = list_.head();
     list_.Remove(n);
     mtx_->unlock();
-
-    node = static_cast<ByteArrayNode *>(n);
+    node = n->value();
     node->data()->clear();
     return node;
 }

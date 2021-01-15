@@ -6,7 +6,7 @@
 
 #include "dlist.h"
 
-class ResourceNode : public ListNode {
+class ResourceNode : public ListNode<ResourceNode> {
 public:
     typedef void (*release_t)(void *);
     typedef void (* const const_release_t)(void *);
@@ -67,17 +67,13 @@ public:
         node->Free();
     }
     void Clear() {
-        ListNode *curr, *next;
-        for (curr = list_.head(), next = curr->next();
-             curr != list_.end();
-             curr = next, next = curr->next()) {
-            ResourceNode *res = static_cast<ResourceNode *>(curr);
-            FreeNode(res);
-        }
+        list_.IterateSafe([this](ResourceNode *node) {
+            FreeNode(node);
+        });
     }
 
 private:
-    DList list_;
+    DList<ResourceNode> list_;
     std::mutex mtx_;
     std::size_t allocated_size_;
     std::size_t allocated_count_;

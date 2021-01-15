@@ -20,7 +20,7 @@ void StpOpcode::Reset()
     nbuf_.Reserve(sizeof(StpHeader) + 1);
 }
 
-void StpOpcode::ProcessMessage(const QByteArray &buf)
+bool StpOpcode::ProcessMessage(const QByteArray &buf)
 {
     const quint8 *data = reinterpret_cast<const quint8 *>(buf.constData());
     const StpHeader *hdr = reinterpret_cast<const StpHeader *>(data);
@@ -29,30 +29,30 @@ void StpOpcode::ProcessMessage(const QByteArray &buf)
     quint16 etx;
 
     if (stx != StpHeader::STX)
-        return;
+        return false;
 
     len = Netbuffer::ToCpu16(hdr->length);
     if (len < STP_MIN_SIZE)
-        return;
+        return false;
 
     etx = Netbuffer::ByteToCpu16(&data[len - 2]);
     if (etx != StpHeader::ETX)
-        return;
+        return false;
 
     quint16 crc = Netbuffer::ByteToCpu16(&data[len - 4]);
     if (CRC16(0, &data[2], len - 6) != crc)
-        return;
+        return false;
 
     if (!hdr->upload)
-        return;
+        return false;
 
     if (!ConfirmRequest(hdr))
-        return;
+        return false;
 
     // Discard header and tail
     data += sizeof(StpHeader);
     len -= (sizeof(StpHeader) + 4);
-
+    return true;
 }
 
 bool StpOpcode::ConfirmRequest(const StpHeader *header)

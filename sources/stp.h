@@ -153,7 +153,7 @@ public:
     void Reset();
     void AppendMessage(int minor, const char *data, quint16 len);
     bool GeneratePacket(int cls, quint16 flags, QByteArray *ba);
-    void ProcessMessage(const QByteArray &);
+    bool ProcessMessage(const QByteArray &);
     quint16 CRC16(quint16 seed, const quint8 *src, size_t len);
 
 private:

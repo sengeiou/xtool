@@ -30,12 +30,12 @@ private:
     }
 
 private:
-    DList list_;
+    DList<ByteArrayNode> list_;
     std::mutex *mtx_;
     std::condition_variable *cv_;
 };
 
-class ByteArrayNode : public ListNode {
+class ByteArrayNode : public ListNode<ByteArrayNode> {
 public:
     ByteArrayNode(int size, ByteArrayNodePool *parent)
         : ListNode(), buf_(new QByteArray), parent_(parent) {
@@ -68,16 +68,16 @@ public:
         list_.Append(node);
     }
     ByteArrayNode *TakeFirst() {
-        ListNode *n = list_.head();
+        auto *n = list_.head();
         list_.Remove(n);
-        return static_cast<ByteArrayNode *>(n);
+        return n->value();
     }
-    bool empty() {
+    bool empty() const {
         return list_.empty();
     }
 
 private:
-    DList list_;
+    DList<ByteArrayNode> list_;
 };
 
 

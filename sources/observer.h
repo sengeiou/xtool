@@ -3,11 +3,11 @@
 
 #include "dlist.h"
 
-class ObserverBase : public ListNode {
+class ObserverBase : public ListNode<ObserverBase> {
 public:
     Observer() : ListNode() {}
     virtual ~Observer() {}
-    virtual void Update() = 0;
+    virtual void Update(void *) = 0;
 };
 
 class ObserverList {
@@ -35,7 +35,7 @@ public:
     }
 
 private:
-    DList list_obs_;
+    DList<ObserverBase> list_obs_;
 };
 
 #endif //OBSERVER_H_

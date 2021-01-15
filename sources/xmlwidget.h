@@ -29,7 +29,6 @@ public:
     void set_breakpoint(bool enable) {
         breakpoint_enabled_ = enable;
     }
-
     bool breakpoint() const {
         return breakpoint_enabled_;
     }

@@ -101,7 +101,7 @@ _reinit:
             if (rx_buf) {
                 *rx_buf = serial.readAll();
                 while (serial.waitForReadyRead(10))
-                    (*rx_buf)+= serial.readAll();
+                    (*rx_buf) += serial.readAll();
                 emit this->RecvMessage(rx_node);
             } else {
                 //Drop messages if buffer is no enought

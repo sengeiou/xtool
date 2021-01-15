@@ -14,6 +14,7 @@ HEADERS += sources/dlist.h
 HEADERS += sources/dlistbuf.h
 HEADERS += sources/observer.h
 
+
 # Resource files
 RESOURCES   = xtool.qrc
 
