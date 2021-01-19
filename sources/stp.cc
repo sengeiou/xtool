@@ -1,6 +1,11 @@
 #include <QTimer>
-
 #include "stp.h"
+
+namespace {
+constexpr int std_min_packet = sizeof(StpHeader) + 4;
+
+}
+
 
 quint16 StpOpcode::CRC16(quint16 seed, const quint8 *src, size_t len)
 {
@@ -32,7 +37,7 @@ bool StpOpcode::ProcessMessage(const QByteArray &buf)
         return false;
 
     len = Netbuffer::ToCpu16(hdr->length);
-    if (len < STP_MIN_SIZE)
+    if (len < std_min_packet)
         return false;
 
     etx = Netbuffer::ByteToCpu16(&data[len - 2]);

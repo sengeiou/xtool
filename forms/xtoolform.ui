@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
-    <height>664</height>
+    <width>574</width>
+    <height>580</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,12 +20,15 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <widget class="QListWidget" name="listWidget"/>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QListWidget" name="listWidget"/>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QTextBrowser" name="textBrowserItem"/>
+        </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
@@ -77,10 +80,10 @@
           </item>
          </layout>
         </item>
-        <item>
-         <widget class="QTextBrowser" name="textBrowser"/>
-        </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QTextBrowser" name="textBrowser"/>
       </item>
      </layout>
     </item>
@@ -91,7 +94,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>719</width>
+     <width>574</width>
      <height>23</height>
     </rect>
    </property>

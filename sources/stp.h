@@ -7,7 +7,6 @@
 
 #define CPU_LITTLE_ENDIAN //??
 
-#define STP_MIN_SIZE (sizeof(StpHeader) + 3 + 4)
 #pragma pack(1)
 struct StpHeader {
     enum {

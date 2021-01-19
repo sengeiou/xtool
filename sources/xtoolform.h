@@ -55,10 +55,12 @@ private:
     void CreateWidgetList();
     bool BuildPacket(QListWidgetItem *item, QByteArray *ba, int *timeout);
     void ExecuteCurrentItem(QListWidgetItem *item, bool walk_around);
-    void ShowCurrentItem(QListWidgetItem *item);
+    void ShowCurrentItem(QListWidgetItem *item, QTextBrowser *text, bool clear);
     void MarkingErrorItem(QListWidgetItem *item);
     void StartTransmitTimer();
     void StopTransmitTimer();
+    void GenerateResult();
+    void AddInformationHeader(QTextBrowser *text, const QString &info);
 
 private:
     enum {
@@ -73,6 +75,7 @@ private:
     QAction *transfer_;
     QListWidget *list_widget_;
     QTextBrowser *text_browser_;
+    QTextBrowser *item_text_browser_;
     QPushButton *start_btn_;
     QPushButton *stop_btn_;
     QCheckBox *skip_chkbox_;

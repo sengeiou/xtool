@@ -16,20 +16,6 @@ public:
     XmlDataNode();
     ~XmlDataNode();
 
-//    void AppendUint8FromString(const QString &str) {
-//        char c = static_cast<char>(str.toUInt());
-//        minor_.append(c);
-//    }
-//    void AppendUint16FromString(const QString &str) {
-//        uint v = str.toUInt();
-//        char c[2];
-//        c[1] = static_cast<char>(v & 0xFF);
-//        c[0] = static_cast<char>((v >> 8) & 0xFF);
-//        minor_.append(c, 2);
-//    }
-//    void AppendBytes(const char *s, int size) {
-//        minor_.append(s, size);
-//    }
     void AppendMinor(MinorItem *minor) {
         minor_.append(minor);
     }
@@ -56,10 +42,10 @@ public:
     }
 
 private:
+    QList<MinorItem *> minor_;
     QString name_;
     QString major_;
     QString timeout_;
-    QList<MinorItem *> minor_;
 };
 
 #endif //XML_NODE_H_
