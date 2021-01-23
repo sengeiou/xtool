@@ -63,6 +63,7 @@ TransferForm::TransferForm(XToolForm *xtool, QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     txbuf_->resize(512);
     text_browser_ = master_->text_browser_;
+    btn_tranfer_status_ = false;
 }
 
 TransferForm::~TransferForm()
@@ -100,6 +101,7 @@ void TransferForm::OnOpenFile()
 
 void TransferForm::CloseFile()
 {
+    text_browser_->append("Close File\n");
     QFile *file = file_;
     if (file) {
         file_ = nullptr;
@@ -148,28 +150,39 @@ void TransferForm::FileMessageProcess(QByteArray *buf)
 
 void TransferForm::OnSendFile()
 {
-    if (filename_.isEmpty())
-        return;
-
-    if (!file_) {
-        file_ = new QFile(filename_);
-        if (!file_->open(QFile::ReadOnly)) {
-            QFile *file = file_;
-            file_ = nullptr;
-            delete file;
-            QMessageBox::information(NULL, "Open failed", filename_);
+    if (!btn_tranfer_status_) {
+        if (filename_.isEmpty())
             return;
+        if (!file_) {
+            file_ = new QFile(filename_);
+            if (!file_->open(QFile::ReadOnly)) {
+                QFile *file = file_;
+                file_ = nullptr;
+                delete file;
+                QMessageBox::information(NULL, "Open failed", filename_);
+                return;
+            }
+
+            ResetOTAHeader(*file_);
+            percent_bar_->setRange(0, 100);
+            percent_bar_->setValue(0);
+            percent_bar_->setVisible(true);
+            file_crc_ = 0;
+            file_sent_size_ = 0;
         }
 
-        ResetOTAHeader(*file_);
-        percent_bar_->setRange(0, 100);
-        percent_bar_->setValue(0);
-        percent_bar_->setVisible(true);
-        file_crc_ = 0;
-        file_sent_size_ = 0;
         SetTranferState(&requst_state_);
+        btn_tranfer_status_ = SendProcess();
+        if (btn_tranfer_status_)
+            btn_send_->setText("Stop");
+    } else {
+        if (timer_->isActive())
+            timer_->stop();
+        SetTranferState(&null_state_);
+        btn_send_->setText("Transmit");
+        btn_tranfer_status_ = false;
+        CloseFile();
     }
-    SendProcess();
 }
 
 void TransferForm::ShowPacket(const QString &title, const QByteArray &text)
@@ -307,6 +320,7 @@ bool FileBreakpointState::Receive(TransferForm *context, QByteArray *buf)
                                      0);
     if (file_crc == Netbuffer::ToCpu32(fbkpt->crc)) {
         ota->seqno = no + 1;
+        context->file_crc_ = file_crc;
         context->file_sent_size_ = no * OTAHeader::MAX_PAYLOAD;
         file->seek(context->file_sent_size_);
     } else {
@@ -381,8 +395,11 @@ bool FileStopState::Receive(TransferForm *context, QByteArray *buf)
         context->text_browser_->append("File SIZE: " + str_size);
         context->text_browser_->append("File CRC: " + str_crc);
         context->text_browser_->append("File transfer completed!");
-        return true;
+        goto _exit;
     }
-    master->text_browser_->append("File transfer failed\n");
+    context->text_browser_->append("File transfer failed\n");
+
+_exit:
+    context->OnSendFile();
     return true;
 }

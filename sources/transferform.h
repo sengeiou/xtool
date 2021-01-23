@@ -71,6 +71,18 @@ public:
     bool Receive(TransferForm *form, QByteArray *buf) override;
 };
 
+class FileNullState : public AbstractTransfer {
+public:
+    FileNullState() = default;
+    ~FileNullState() = default;
+    bool Send(TransferForm *) override {
+        return true;
+    }
+    bool Receive(TransferForm *, QByteArray *) override {
+        return true;
+    }
+};
+
 
 class TransferForm : public QWidget {
     Q_OBJECT
@@ -120,6 +132,7 @@ private:
     quint32 file_crc_;
     quint32 file_size_;
     qint64 file_sent_size_;
+    bool btn_tranfer_status_;
     
 private:
     QTextBrowser *text_browser_;
@@ -127,6 +140,7 @@ private:
     FileBreakpointState bkpt_state_;
     FileSendState send_state_;
     FileStopState stop_state_;
+    FileNullState null_state_;
     AbstractTransfer *transfer_;
 };
 
