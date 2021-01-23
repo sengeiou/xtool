@@ -33,7 +33,7 @@ SOURCES += sources/xmlnode.cc
 SOURCES += sources/xmlwidget.cc
 SOURCES += sources/stp.cc
 SOURCES += sources/dlistbuf.cc
-SOURCES += sources/observer.cc
+
 
 # Link libraries
 QT += widgets
