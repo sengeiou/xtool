@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <functional>
 
 class QAction;
 class QSerialPort;
@@ -28,12 +29,14 @@ class XToolForm : public QMainWindow
     Q_OBJECT
 
     friend class SerialForm;
+    friend class TransferForm;
 public:
     explicit XToolForm(QWidget *parent = nullptr);
     ~XToolForm();
 
     bool SendMessage(const QByteArray &buf);
     void ClosePort();
+    void ResumeMessageProcess();
 
 private slots:
     void OnActionConnect();
@@ -48,6 +51,7 @@ private slots:
     void PortChangedStatus(const QString &s);
     void ProvideContextMenu(const QPoint &point);
     void OnRetransmitTimeout();
+
 private:
     void StartExecute(QListWidgetItem *curr, bool walk_around);
     void StopExecute(QListWidgetItem *curr);
@@ -61,6 +65,7 @@ private:
     void StopTransmitTimer();
     void GenerateResult();
     void AddInformationHeader(QTextBrowser *text, const QString &info);
+    void MainMessageProcess(QByteArray *buf);
 
 private:
     enum {
@@ -89,6 +94,8 @@ private:
     QByteArray *waiting_ack_;
     QTimer *retrans_timer_;
     int retrans_count_;
+
+    std::function<void(QByteArray *)> process_fn_;
 };
 
 #endif //XTOOLFORM_H_

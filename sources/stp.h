@@ -7,6 +7,24 @@
 
 #define CPU_LITTLE_ENDIAN //??
 
+#define STP_OTA_CLASS 0x01
+
+#pragma pack(1)
+struct OTAHeader {
+    enum {
+        MAX_PAYLOAD = 256,
+    };
+    quint16 maxno;
+    quint16 seqno;
+};
+
+#pragma pack(1)
+struct StpL3Header {
+    quint8 minor;
+    quint16 length;
+    quint8 data[];
+};
+
 #pragma pack(1)
 struct StpHeader {
     enum {
@@ -96,9 +114,18 @@ public:
         data_ += len;
         return ptr;
     }
-    quint16 ToNet16(quint16 data) {
+    static quint16 ToNet16(quint16 data) {
      #ifdef CPU_LITTLE_ENDIAN
         return (data << 8) | (data >> 8);
+     #else
+        return data;
+     #endif
+    }
+    static quint32 ToNet32(quint32 data) {
+     #ifdef CPU_LITTLE_ENDIAN
+        quint32 l = ToNet16(data & 0xFFFF);
+        quint16 h = ToNet16((data >> 16) & 0xFFFF);
+        return (l << 16) | h;
      #else
         return data;
      #endif
@@ -106,6 +133,15 @@ public:
     static quint16 ToCpu16(quint16 data) {
      #ifdef CPU_LITTLE_ENDIAN
         return (data << 8) | (data >> 8);
+     #else
+        return data;
+     #endif
+    }
+    static quint32 ToCpu32(quint32 data) {
+     #ifdef CPU_LITTLE_ENDIAN
+        quint32 l = ToCpu16(data & 0xFFFF);
+        quint16 h = ToCpu16((data >> 16) & 0xFFFF);
+        return (l << 16) | h;
      #else
         return data;
      #endif
@@ -154,6 +190,7 @@ public:
     bool GeneratePacket(int cls, quint16 flags, QByteArray *ba);
     bool ProcessMessage(const QByteArray &);
     quint16 CRC16(quint16 seed, const quint8 *src, size_t len);
+    const quint8 *ToL2(const QByteArray &buf, quint16 *len);
 
 private:
     void AppendHeader(int cls, quint16 flags);
@@ -162,6 +199,7 @@ private:
 private:
     Netbuffer nbuf_;
     quint16 reqno_;
+    quint16 rxlen_;
 };
 
 

@@ -105,6 +105,7 @@ XToolForm::XToolForm(QWidget *parent)
     setWindowIcon(QIcon(":/images/main_icon.png"));
     //setCentralWidget(widget);
 
+    ResumeMessageProcess();
 }
 
 XToolForm::~XToolForm()
@@ -142,8 +143,11 @@ void XToolForm::OnActionConnect()
 
 void XToolForm::OnActionTransfer()
 {
-    TransferForm *form = new TransferForm();
+    TransferForm *form = new TransferForm(this);
     form->showNormal();
+    process_fn_ = std::bind(&TransferForm::FileMessageProcess,
+                            form,
+                            std::placeholders::_1);
 }
 
 void XToolForm::OnOpenFile()
@@ -293,26 +297,29 @@ void XToolForm::ProvideContextMenu(const QPoint &point)
     }
 }
 
-void XToolForm::OnReceiveMessage(ByteArrayNode *node)
+void XToolForm::MainMessageProcess(QByteArray *buf)
 {
     StopTransmitTimer();
-    QByteArray *buf = node->data();
     QByteArray str(buf->toHex(' ').toUpper());
     text_browser_->append("Received: " + str);
 
+    if (!list_widget_->count())
+        return;
     bool okay = stp_->ProcessMessage(*buf);
     XmlWidgetItem *item = static_cast<XmlWidgetItem *>(list_widget_->currentItem());
     item->set_result(okay);
     if (okay || skip_chkbox_->isChecked()) {
-        //Execute completed
         if (!ExecuteNextItem()) {
             StopExecute(list_widget_->currentItem());
         }
     } else {
         StopExecute(list_widget_->currentItem());
     }
+}
 
-    //Release data buffer node
+void XToolForm::OnReceiveMessage(ByteArrayNode *node)
+{
+    process_fn_(node->data());
     node->Release();
 }
 
@@ -410,6 +417,13 @@ void XToolForm::OnRetransmitTimeout()
         QString str(waiting_ack_->toHex(' ').toUpper());
         text_browser_->append("Retransmit packet: " + str);
     }
+}
+
+void XToolForm::ResumeMessageProcess()
+{
+    process_fn_ = std::bind(&XToolForm::MainMessageProcess,
+                            this,
+                            std::placeholders::_1);
 }
 
 void XToolForm::StartTransmitTimer()

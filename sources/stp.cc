@@ -53,10 +53,6 @@ bool StpOpcode::ProcessMessage(const QByteArray &buf)
 
     if (!ConfirmRequest(hdr))
         return false;
-
-    // Discard header and tail
-    data += sizeof(StpHeader);
-    len -= (sizeof(StpHeader) + 4);
     return true;
 }
 
@@ -115,4 +111,14 @@ bool StpOpcode::GeneratePacket(int cls, quint16 flags, QByteArray *ba)
     AppendHeader(cls, flags);
     ba->append(nbuf_.data(), nbuf_.length());
     return true;
+}
+
+const quint8 *StpOpcode::ToL2(const QByteArray &buf, quint16 *len)
+{
+    const quint8 *data = reinterpret_cast<const quint8 *>(buf.constData());
+    const StpHeader *hdr = reinterpret_cast<const StpHeader *>(data);
+    data += sizeof(StpHeader);
+    if (len != nullptr)
+        *len = Netbuffer::ToCpu16(hdr->length) - sizeof(StpHeader) - 4;
+    return data;
 }
