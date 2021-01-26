@@ -19,7 +19,7 @@ class QLabel;
 class XmlParse;
 class SerialForm;
 class SerialThread;
-class TransferForm;
+class TransferController;
 class QTextBrowser;
 class QListWidgetItem;
 class StpOpcode;
@@ -29,8 +29,7 @@ namespace Ui {
 class MainWindow;
 }
 
-class XToolForm : public QMainWindow
-{
+class XToolForm : public QMainWindow {
     Q_OBJECT
 
     friend class SerialForm;
@@ -99,7 +98,7 @@ private:
     QAction *toolbar_setting_;
     QAction *toolbar_clear_;
 
-    TransferForm *transfer_form_;
+    TransferController *transfer_controller_;
     SerialThread *serial_;
     SerialForm *serial_form_;
     XmlParse *xml_;

@@ -5,9 +5,9 @@
 
 class ObserverBase : public ListNode<ObserverBase> {
 public:
-    Observer() : ListNode() {}
-    virtual ~Observer() {}
-    virtual void Update(void *) = 0;
+    ObserverBase(): ListNode<ObserverBase>() {}
+    virtual ~ObserverBase() {}
+    virtual void Update(int action, void *) = 0;
 };
 
 class ObserverList {
@@ -24,13 +24,12 @@ public:
     void RemoveObserver(ObserverBase *obs) {
         list_obs_.Remove(obs);
     }
-    void Notify() {
-        ObserverBase *obs;
-        for (ListNode *curr = list_obs_.head();
+    void Notify(int action, void *ptr) {
+        for (ListNode<ObserverBase> *curr = list_obs_.head();
              curr != list_obs_.end();
              curr = curr->next()) {
-            obs = static_cast<ObserverBase *>(curr);
-            obs->Update();
+            ObserverBase *obs = curr->value();
+            obs->Update(action, ptr);
         }
     }
 

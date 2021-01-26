@@ -13,21 +13,26 @@
 #include <QByteArray>
 #include <QTimer>
 
+#include "transfer/transfer_controller.h"
+#include "transfer/transfer_view.h"
+#include "transfer/file_transfer.h"
+
 #include "ui_xtoolform.h"
 #include "xtoolform.h"
 
 #include "serialform.h"
-#include "transferform.h"
 #include "xmlparse.h"
 #include "xmlwidget.h"
 #include "stp.h"
 #include "serial.h"
 
 
+
+
 XToolForm::XToolForm(QWidget *parent)
     : QMainWindow(parent),
       ui_(new Ui::MainWindow),
-      transfer_form_(nullptr),
+      transfer_controller_(nullptr),
       serial_(nullptr),
       serial_form_(nullptr),
       xml_(nullptr),
@@ -176,16 +181,16 @@ void XToolForm::OnActionConnect()
 
 void XToolForm::OnActionTransfer()
 {
-    TransferForm *form = transfer_form_;
-    if (!form) {
-        form = new TransferForm(this, this);
-        transfer_form_ = form;
-        form->setWindowFlags(Qt::Dialog | Qt::Popup);
+    TransferController *controller = transfer_controller_;
+    if (controller == nullptr) {
+        TransferView *view = new TransferView(this, ui_->textBrowser);
+        FileTransfer *transfer = new FileTransfer(this);
+        controller = new TransferController(view, transfer);
+        transfer_controller_ = controller;
     }
-
-    form->showNormal();
-    process_fn_ = std::bind(&TransferForm::FileMessageProcess,
-                            form,
+    controller->Show();
+    process_fn_ = std::bind(&TransferController::MessageProcess,
+                            controller,
                             std::placeholders::_1);
 }
 

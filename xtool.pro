@@ -1,10 +1,11 @@
 # Header files
+INCLUDEPATH = sources
 HEADERS =  sources/xtoolform.h
 HEADERS += sources/serialform.h
 HEADERS += sources/serial.h
 HEADERS += sources/xtool.h
 HEADERS += sources/msgserver.h
-HEADERS += sources/transferform.h
+#HEADERS += sources/transferform.h
 HEADERS += sources/xmlparse.h
 HEADERS += sources/xmlnode.h
 HEADERS += sources/xmlwidget.h
@@ -14,18 +15,28 @@ HEADERS += sources/dlist.h
 HEADERS += sources/dlistbuf.h
 HEADERS += sources/observer.h
 
+HEADERS += sources/transfer/file_transfer.h
+HEADERS += sources/transfer/transfer_controller.h
+HEADERS += sources/transfer/transfer_view.h
+
 # Source files
 SOURCES =  sources/override.cc
+
 SOURCES += sources/main.cc
 SOURCES += sources/xtoolform.cc
 SOURCES += sources/serialform.cc
 SOURCES += sources/serial.cc
-SOURCES += sources/transferform.cc
+#SOURCES += sources/transferform.cc
 SOURCES += sources/xmlparse.cc
 SOURCES += sources/xmlnode.cc
 SOURCES += sources/xmlwidget.cc
 SOURCES += sources/stp.cc
 SOURCES += sources/dlistbuf.cc
+
+SOURCES += sources/transfer/file_transfer.cc
+SOURCES += sources/transfer/transfer_controller.cc
+SOURCES += sources/transfer/transfer_view.cc
+
 
 
 # Link libraries
