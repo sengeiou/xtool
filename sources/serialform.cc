@@ -1,4 +1,3 @@
-#include <QtUiTools>
 #include <QFile>
 #include <QComboBox>
 #include <QVBoxLayout>
@@ -9,6 +8,7 @@
 
 #include <QMessageBox>
 
+#include "ui_serialform.h"
 #include "serialform.h"
 #include "serial.h"
 #include "xtoolform.h"
@@ -45,22 +45,16 @@ const QSerialPort::Parity parity_table[] = {
 }
 
 SerialForm::SerialForm(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+      ui_(new Ui::SerialForm)
 {
-    QFile file(":/forms/serialform.ui");
-    if (!file.open(QFile::ReadOnly))
-        return;
-
-    QUiLoader loader;
-    QWidget *widget = loader.load(&file, this);
-    file.close();
-
-    port_ = findChild<QComboBox *>("comboBoxPort");
-    baudrate_ = findChild<QComboBox *>("comboBoxBaudrate");
-    databit_ = findChild<QComboBox *>("comboBoxDatabit");
-    stopbit_ = findChild<QComboBox *>("comboBoxStopbit");
-    parity_ = findChild<QComboBox *>("comboBoxParity");
-    done_ = findChild<QPushButton *>("pushButtonEnter");
+    ui_->setupUi(this);
+    port_ = ui_->comboBoxPort;
+    baudrate_ = ui_->comboBoxBaudrate;
+    databit_ = ui_->comboBoxDatabit;
+    stopbit_ = ui_->comboBoxStopbit;
+    parity_ = ui_->comboBoxParity;
+    done_ = ui_->pushButtonEnter;
 
     //Scan avalible serial ports of system
     ScanAvaliblePort();
@@ -68,15 +62,15 @@ SerialForm::SerialForm(QWidget *parent)
     //Connect events
     connect(done_, &QPushButton::clicked, this, &SerialForm::OnPushButtonClicked);
 
-    QVBoxLayout *vbox = new QVBoxLayout();
-    vbox->addWidget(widget);
-    setLayout(vbox);
-
     Qt::WindowFlags flags = windowFlags();
     flags &= ~(Qt::WindowMaximizeButtonHint | Qt::WindowMinMaxButtonsHint);
     setWindowFlags(flags);
-    setFixedSize(widget->width(),widget->height());
-    setWindowTitle("COM");
+    setFixedSize(width(), height());
+}
+
+SerialForm::~SerialForm()
+{
+    delete ui_;
 }
 
 void SerialForm::ScanAvaliblePort()
@@ -109,9 +103,9 @@ void SerialForm::OnPushButtonClicked()
     connect(serial, &SerialThread::RecvMessage,
             master_, &XToolForm::OnReceiveMessage);
     connect(serial, &SerialThread::Connected,
-            master_, &XToolForm::PortChangedStatus);
+            master_, &XToolForm::OnPortChangedStatus);
     connect(serial, &SerialThread::Disconnected,
-            master_, &XToolForm::PortChangedStatus);
+            master_, &XToolForm::OnPortChangedStatus);
     if (!serial->Start(port_->currentText(), param))
         delete serial;
 

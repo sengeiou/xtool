@@ -17,7 +17,6 @@ SerialThread::~SerialThread()
     Stop();
     if (list_mutex_)
         delete list_mutex_;
-
     delete tx_queue_;
     delete node_pool_;
 }
@@ -81,7 +80,8 @@ _reinit:
         return;
     }
 
-    emit this->Connected("Connected");
+    QString info = QString("Connected(%1)").arg(port_name_);
+    emit this->Connected(info, true);
     while (actived_.load()) {
         list_mutex_->lock();
         if (!tx_queue_->empty()) {
@@ -113,6 +113,6 @@ _reinit:
     }
 
     serial.close();
-    emit this->Disconnected("Disconnected");
+    emit this->Disconnected("Disconnected", false);
 }
 

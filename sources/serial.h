@@ -33,8 +33,8 @@ public:
     }
 
 signals:
-    void Connected(const QString &);
-    void Disconnected(const QString &);
+    void Connected(const QString &, bool);
+    void Disconnected(const QString &, bool);
     void Error(const QString &);
     void RecvMessage(ByteArrayNode *);
 

@@ -1,10 +1,11 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
-   <file>forms/xtoolform.ui</file>
-   <file>forms/serialform.ui</file>
-   <file>forms/transferform.ui</file>
    <file>images/main_icon.png</file>
    <file>images/bpon.png</file>
    <file>images/bpoff.png</file>
+   <file>images/settings.png</file>
+   <file>images/clear.png</file>
+   <file>images/connect.png</file>
+   <file>images/disconnect.png</file>
 </qresource>
 </RCC>

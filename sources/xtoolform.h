@@ -14,6 +14,7 @@ class QListWidget;
 class ByteArray;
 class QTimer;
 class QCheckBox;
+class QLabel;
 
 class XmlParse;
 class SerialForm;
@@ -23,6 +24,10 @@ class QTextBrowser;
 class QListWidgetItem;
 class StpOpcode;
 class ByteArrayNode;
+
+namespace Ui {
+class MainWindow;
+}
 
 class XToolForm : public QMainWindow
 {
@@ -34,11 +39,11 @@ public:
     explicit XToolForm(QWidget *parent = nullptr);
     ~XToolForm();
 
-    bool SendMessage(const QByteArray &buf);
-    void ClosePort();
+    bool Send(const QByteArray &buf);
     void ResumeMessageProcess();
 
 private slots:
+    void OnClosePort();
     void OnActionConnect();
     void OnActionTransfer();
     void OnOpenFile();
@@ -48,9 +53,10 @@ private slots:
     void OnStartExecute();
     void OnStopExecute();
     void OnExecuteItemChanged(QListWidgetItem *, QListWidgetItem *);
-    void PortChangedStatus(const QString &s);
+    void OnPortChangedStatus(const QString &s, bool open);
     void ProvideContextMenu(const QPoint &point);
     void OnRetransmitTimeout();
+    void OnClearText();
 
 private:
     void StartExecute(QListWidgetItem *curr, bool walk_around);
@@ -73,6 +79,7 @@ private:
         RETRANS_COUNT = 2
     };
     QString filename_;
+    Ui::MainWindow *ui_;
     QAction *open_;
     QAction *exit_;
     QAction *conn_;
@@ -84,9 +91,17 @@ private:
     QPushButton *start_btn_;
     QPushButton *stop_btn_;
     QCheckBox *skip_chkbox_;
+    QLabel *status_label_;
+
+    //Toolbar action
+    QAction *toolbar_conn_;
+    QAction *toolbar_disconn_;
+    QAction *toolbar_setting_;
+    QAction *toolbar_clear_;
 
     TransferForm *transfer_form_;
     SerialThread *serial_;
+    SerialForm *serial_form_;
     XmlParse *xml_;
     StpOpcode *stp_;
     QTimer *timer_;

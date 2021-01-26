@@ -1,4 +1,3 @@
-#include <QtUiTools>
 #include <QSpinBox>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -10,10 +9,13 @@
 #include <QListWidget>
 #include <QTextBrowser>
 #include <QCheckBox>
+#include <QSpacerItem>
 #include <QByteArray>
 #include <QTimer>
 
+#include "ui_xtoolform.h"
 #include "xtoolform.h"
+
 #include "serialform.h"
 #include "transferform.h"
 #include "xmlparse.h"
@@ -24,52 +26,62 @@
 
 XToolForm::XToolForm(QWidget *parent)
     : QMainWindow(parent),
+      ui_(new Ui::MainWindow),
+      transfer_form_(nullptr),
       serial_(nullptr),
+      serial_form_(nullptr),
       xml_(nullptr),
-      stp_(new StpOpcode()),
-      timer_(new QTimer()),
-      waiting_ack_(new QByteArray()),
-      retrans_timer_(new QTimer())
+      stp_(new StpOpcode),
+      timer_(new QTimer),
+      waiting_ack_(new QByteArray),
+      retrans_timer_(new QTimer)
 {
-    QUiLoader loader;
+    ui_->setupUi(this);
 
     waiting_ack_->resize(1024);
     timer_->setSingleShot(true);
     retrans_timer_->setSingleShot(true);
 
-    QFile file(":/forms/xtoolform.ui");
-    if (!file.open(QFile::ReadOnly)) {
-        //logger()->debug(tr("Failed to open UI file."));
-        return;
-    }
-
-    QWidget *widget = loader.load(&file, this);
-    file.close();
-    if (widget == nullptr)
-        return;
-
     //File menu
-    open_ = findChild<QAction *>("actionOpen");
-    exit_ = findChild<QAction *>("actionExit");
+    open_ = ui_->actionOpen;
+    exit_ = ui_->actionExit;
 
     //Port menu
-    conn_ = findChild<QAction *>("actionConnect");
+    conn_ = ui_->actionConnect;
 
     //About
-    about_ = findChild<QAction *>("actionAbout");
+    about_ = ui_->actionAbout;
 
     //File transmit group
-    transfer_ = findChild<QAction *>("actionSend_File");
+    transfer_ = ui_->actionSend_File;
 
-    list_widget_ = findChild<QListWidget *>("listWidget");
-    text_browser_ = findChild<QTextBrowser *>("textBrowser");
-    item_text_browser_ = findChild<QTextBrowser *>("textBrowserItem");
+    list_widget_ = ui_->listWidget;
+    text_browser_ = ui_->textBrowser;
+    item_text_browser_ = ui_->textBrowserItem;
 
-    start_btn_ = findChild<QPushButton *>("pushButtonStart");
-    stop_btn_ = findChild<QPushButton *>("pushButtonStop");
+    start_btn_ = ui_->pushButtonStart;
+    stop_btn_ = ui_->pushButtonStop;
     stop_btn_->setEnabled(false);
 
-    skip_chkbox_ = findChild<QCheckBox *>("checkBoxSkipBox");
+    skip_chkbox_ = ui_->checkBoxSkipBox;
+
+    //Toolbar
+    QToolBar *toolbar = ui_->toolBar;
+    toolbar_conn_ = toolbar->addAction(QIcon(":/images/connect.png"),
+                                       "Connect");
+    toolbar_disconn_ = toolbar->addAction(QIcon(":/images/disconnect.png"),
+                                       "Disconnect");
+    toolbar_setting_ = toolbar->addAction(QIcon(":/images/settings.png"),
+                                          "Setting");
+    toolbar_clear_ = toolbar->addAction(QIcon(":/images/clear.png"),
+                                       "Clear");
+    toolbar_disconn_->setEnabled(false);
+    toolbar_conn_->setEnabled(true);
+
+    //StatusBar
+    QStatusBar *statusbar = ui_->statusBar;
+    status_label_ = new QLabel("Disconnected");
+    statusbar->addPermanentWidget (status_label_);
 
     //Connect events
     connect(exit_, &QAction::triggered,
@@ -89,6 +101,13 @@ XToolForm::XToolForm(QWidget *parent)
     connect(stop_btn_, &QPushButton::clicked,
             this, &XToolForm::OnStopExecute);
 
+    connect(toolbar_conn_, &QAction::triggered,
+            this, &XToolForm::OnActionConnect);
+    connect(toolbar_disconn_, &QAction::triggered,
+            this, &XToolForm::OnClosePort);
+    connect(toolbar_clear_, &QAction::triggered,
+            this, &XToolForm::OnClearText);
+
     //Set right-click menu for list-widget item
     list_widget_->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(list_widget_, &QListWidget::customContextMenuRequested,
@@ -100,50 +119,70 @@ XToolForm::XToolForm(QWidget *parent)
     connect(retrans_timer_, &QTimer::timeout,
             this, &XToolForm::OnRetransmitTimeout);
 
-    widget->setWindowFlags(Qt::SubWindow);
-    setWindowTitle(tr("xtool"));
     setWindowIcon(QIcon(":/images/main_icon.png"));
-    //setCentralWidget(widget);
-
+    //setAttribute(Qt::WA_DeleteOnClose);
     ResumeMessageProcess();
 }
 
 XToolForm::~XToolForm()
 {
-    ClosePort();
+    OnClosePort();
     if (xml_) {
-        delete xml_;
+        XmlParse *xml = xml_;
         xml_ = nullptr;
+        delete xml;
     }
-    delete stp_;
-    stp_ = nullptr;
+    if (ui_) {
+        Ui::MainWindow *ui = ui_;
+        ui_ = nullptr;
+        delete ui;
+    }
+    if (stp_) {
+        StpOpcode *stp = stp_;
+        stp_ = nullptr;
+        delete stp;
+    }
 }
 
-bool XToolForm::SendMessage(const QByteArray &buf)
+bool XToolForm::Send(const QByteArray &buf)
 {
     if (serial_)
         return serial_->SendTo(buf);
     return false;
 }
 
-void XToolForm::ClosePort()
+void XToolForm::OnClosePort()
 {
     if (serial_) {
+        toolbar_disconn_->setEnabled(false);
         delete serial_;
         serial_ = nullptr;
+        toolbar_conn_->setEnabled(true);
     }
 }
 
 void XToolForm::OnActionConnect()
 {
-    SerialForm *form = new SerialForm();
-    form->SetMasterForm(this);
+    SerialForm *form = serial_form_;
+    if (!form) {
+        form = new SerialForm(this);
+        serial_form_ = form;
+        form->SetMasterForm(this);
+        form->setWindowFlags(Qt::Dialog | Qt::Popup);
+    }
+
     form->showNormal();
 }
 
 void XToolForm::OnActionTransfer()
 {
-    TransferForm *form = new TransferForm(this);
+    TransferForm *form = transfer_form_;
+    if (!form) {
+        form = new TransferForm(this, this);
+        transfer_form_ = form;
+        form->setWindowFlags(Qt::Dialog | Qt::Popup);
+    }
+
     form->showNormal();
     process_fn_ = std::bind(&TransferForm::FileMessageProcess,
                             form,
@@ -170,6 +209,7 @@ void XToolForm::OnOpenFile()
             filename_ = list.takeFirst();
             xml_ = new XmlParse(filename_);
             if (xml_->ParseFile()) {
+                setWindowTitle(QString("xtool [%1]").arg(filename_));
                 CreateWidgetList();
                 return;
             }
@@ -323,9 +363,16 @@ void XToolForm::OnReceiveMessage(ByteArrayNode *node)
     node->Release();
 }
 
-void XToolForm::PortChangedStatus(const QString &s)
+void XToolForm::OnPortChangedStatus(const QString &s, bool open)
 {
-    statusBar()->setStatusTip(s);
+    if (open) {
+        toolbar_conn_->setEnabled(false);
+        toolbar_disconn_->setEnabled(true);
+    } else {
+        toolbar_conn_->setEnabled(true);
+        toolbar_disconn_->setEnabled(false);
+    }
+    status_label_->setText(s);
 }
 
 bool XToolForm::ExecuteNextItem(void)
@@ -366,7 +413,7 @@ void XToolForm::ExecuteCurrentItem(QListWidgetItem *curr, bool walk_around)
     if (BuildPacket(curr, buffer, &timeout)) {
         QString str(buffer->toHex(' ').toUpper());
         text_browser_->append("Packet: " + str);
-        this->SendMessage(*buffer);
+        this->Send(*buffer);
         if (walk_around)
             timer_->start(timeout);
         StartTransmitTimer();
@@ -412,7 +459,7 @@ void XToolForm::OnRetransmitTimeout()
 {
     if (retrans_count_ > 0) {
         retrans_count_--;
-        SendMessage(*waiting_ack_);
+        Send(*waiting_ack_);
         retrans_timer_->start(RETRANS_TIMEOUT);
         QString str(waiting_ack_->toHex(' ').toUpper());
         text_browser_->append("Retransmit packet: " + str);
@@ -467,4 +514,9 @@ void XToolForm::AddInformationHeader(QTextBrowser *text, const QString &info)
    text->append("=============================");
    text->append(info);
    text->append("=============================");
+}
+
+void XToolForm::OnClearText()
+{
+    text_browser_->clear();
 }

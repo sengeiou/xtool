@@ -8,6 +8,8 @@
 #include <QTimer>
 
 #include "transferform.h"
+#include "ui_transferform.h"
+
 #include "xtoolform.h"
 #include "dlistbuf.h"
 #include "stp.h"
@@ -20,30 +22,22 @@
 
 
 TransferForm::TransferForm(XToolForm *xtool, QWidget *parent)
-    : QWidget(parent), master_(xtool),
+    : QWidget(parent),
+      ui_(new Ui::TransferForm),
+      master_(xtool),
       file_(nullptr),
       txbuf_(new QByteArray),
       timer_(new QTimer),
       ota_(new OTAHeader),
       stp_(new StpOpcode)
 {
-    QUiLoader loader;
-    QFile file(":/forms/transferform.ui");
-    if (!file.open(QFile::ReadOnly)) {
-        //logger()->debug(tr("Failed to open UI file."));
-        return;
-    }
-
-    QWidget *widget = loader.load(&file, this);
-    file.close();
-    if (widget == nullptr)
-        return;
+    ui_->setupUi(this);
 
     //File transmit group
-    btn_open_ = findChild<QPushButton *>("pushButtonOpen");
-    btn_send_ = findChild<QPushButton *>("pushButtonSend");
-    fname_ledit_ = findChild<QLineEdit *>("lineEditFileName");
-    percent_bar_ = findChild<QProgressBar *>("progressBar");
+    btn_open_ = ui_->pushButtonOpen; //findChild<QPushButton *>("pushButtonOpen");
+    btn_send_ = ui_->pushButtonSend; //findChild<QPushButton *>("pushButtonSend");
+    fname_ledit_ = ui_->lineEditFileName; //findChild<QLineEdit *>("lineEditFileName");
+    percent_bar_ = ui_->progressBar; //findChild<QProgressBar *>("progressBar");
 
     percent_bar_->setVisible(false);
     btn_send_->setEnabled(false);
@@ -58,9 +52,8 @@ TransferForm::TransferForm(XToolForm *xtool, QWidget *parent)
     Qt::WindowFlags flags = windowFlags();
     flags &= ~(Qt::WindowMaximizeButtonHint | Qt::WindowMinMaxButtonsHint);
     setWindowFlags(flags);
-    setFixedSize(widget->width(),widget->height());
+    setFixedSize(width(),height());
     setWindowTitle("File transfer");
-    setAttribute(Qt::WA_DeleteOnClose);
     txbuf_->resize(512);
     text_browser_ = master_->text_browser_;
     btn_tranfer_status_ = false;
@@ -68,13 +61,19 @@ TransferForm::TransferForm(XToolForm *xtool, QWidget *parent)
 
 TransferForm::~TransferForm()
 {
-    master_->ResumeMessageProcess();
     if (file_)
         delete file_;
     delete timer_;
     delete txbuf_;
     delete stp_;
     delete ota_;
+    delete ui_;
+}
+
+void TransferForm::closeEvent(QCloseEvent* ev)
+{
+    QWidget::closeEvent(ev);
+    master_->ResumeMessageProcess();
 }
 
 void TransferForm::OnOpenFile()
@@ -122,7 +121,7 @@ void TransferForm::OnTimeout()
 {
     if (tx_retry_ > 0) {
         ShowPacket("Resend Packet: ", *txbuf_);
-        master_->SendMessage(*txbuf_);
+        master_->Send(*txbuf_);
         tx_retry_--;
     } else {
         percent_bar_->setVisible(false);
@@ -244,7 +243,7 @@ bool FileRequestState::Send(TransferForm *context)
     StpOpcode *stp = context->stp_;
     stp->AppendMessage(OTA_FILE_REQ, nullptr, 0);
     stp->GeneratePacket(STP_OTA_CLASS, 0, txbuf);
-    return context->master_->SendMessage(*txbuf);
+    return context->master_->Send(*txbuf);
 }
 
 bool FileRequestState::Receive(TransferForm *context, QByteArray *buf)
@@ -280,7 +279,7 @@ bool FileBreakpointState::Send(TransferForm *context)
     StpOpcode *stp = context->stp_;
     stp->AppendMessage(OTA_FILE_BKPT, nullptr, 0);
     stp->GeneratePacket(STP_OTA_CLASS, 0, txbuf);
-    return context->master_->SendMessage(*txbuf);
+    return context->master_->Send(*txbuf);
 }
 
 bool FileBreakpointState::Receive(TransferForm *context, QByteArray *buf)
@@ -366,7 +365,7 @@ bool FileSendState::Send(TransferForm *context)
     context->percent_bar_->setValue(context->ota_->seqno * 100 / context->ota_->maxno);
     stp->AppendMessage(OTA_FILE_DATA, buffer, ret+sizeof(OTAHeader));
     stp->GeneratePacket(STP_OTA_CLASS, 0, txbuf);
-    return context->master_->SendMessage(*txbuf);
+    return context->master_->Send(*txbuf);
 }
 
 bool FileSendState::Receive(TransferForm *context, QByteArray *buf)
@@ -384,7 +383,7 @@ bool FileStopState::Send(TransferForm *context)
     quint32 crc = Netbuffer::ToNet32(context->file_crc_);
     stp->AppendMessage(OTA_FILE_CMP, (const char *)&crc, sizeof(crc));
     stp->GeneratePacket(STP_OTA_CLASS, 0, txbuf);
-    return context->master_->SendMessage(*txbuf);
+    return context->master_->Send(*txbuf);
 }
 
 bool FileStopState::Receive(TransferForm *context, QByteArray *buf)

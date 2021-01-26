@@ -14,13 +14,6 @@ HEADERS += sources/dlist.h
 HEADERS += sources/dlistbuf.h
 HEADERS += sources/observer.h
 
-
-# Resource files
-RESOURCES   = xtool.qrc
-
-# ICON
-RC_ICONS = images/main_icon.ico
-
 # Source files
 SOURCES =  sources/override.cc
 SOURCES += sources/main.cc
@@ -41,4 +34,17 @@ QT += core
 QT += uitools
 QT += serialport
 QT += xml
+
+
+# Resource files
+RESOURCES   = xtool.qrc
+
+# ICON
+RC_ICONS = images/main_icon.ico
+
+# Form
+FORMS =
+FORMS += forms/transferform.ui
+FORMS += forms/serialform.ui
+FORMS += forms/xtoolform.ui
 

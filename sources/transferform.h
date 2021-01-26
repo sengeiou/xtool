@@ -83,6 +83,10 @@ public:
     }
 };
 
+#include "ui_transferform.h"
+namespace Ui {
+    class Transferform;
+} // namespace Ui
 
 class TransferForm : public QWidget {
     Q_OBJECT
@@ -95,6 +99,9 @@ public:
     explicit TransferForm(XToolForm *master, QWidget *parent = nullptr);
     ~TransferForm();
     void FileMessageProcess(QByteArray *buf);
+
+protected:
+    void closeEvent(QCloseEvent* ev) override;
 
 private slots:
     void OnOpenFile();
@@ -113,9 +120,9 @@ private:
     bool SendProcess(void);
     bool ReceiveProcess(QByteArray *buf);
 
-
 private:
     QString filename_;
+    Ui::TransferForm *ui_;
     QPushButton *btn_open_;
     QPushButton *btn_send_;
     QProgressBar *percent_bar_;
