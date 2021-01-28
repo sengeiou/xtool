@@ -4,8 +4,8 @@
 #include <QTimer>
 
 #include "transfer/file_transfer.h"
-#include "stp.h"
-#include "xtoolform.h"
+#include "stp/stp.h"
+#include "xtool_model.h"
 
 //File transfer subcommand
 #define OTA_FILE_REQ  0x01
@@ -14,7 +14,7 @@
 #define OTA_FILE_CMP  0x04
 
 
-FileTransfer::FileTransfer(XToolForm *master)
+FileTransfer::FileTransfer(XToolModel *master)
       : master_(master),
       file_(nullptr),
       txbuf_(new QByteArray),
@@ -63,6 +63,11 @@ void FileTransfer::StopFileTransfer()
 
     SetTranferState(&null_state_);
     CloseFile();
+}
+
+void FileTransfer::CloseProcess()
+{
+    master_->ResumeMessageProcess();
 }
 
 void FileTransfer::CloseFile()

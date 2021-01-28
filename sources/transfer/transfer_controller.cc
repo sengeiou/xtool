@@ -18,6 +18,7 @@ TransferController::TransferController(TransferView *view,
     view_->SetProgressBarStatus(false);
     view_->SetTransferButtonText("Transmit");
     view_->SetTransferButtonStatus(false);
+    view_->SetModel(file_transfer_);
     file_transfer_->AddObserver(this);
 }
 
@@ -33,6 +34,7 @@ void TransferController::OnOpenFile()
     bool okay;
     okay = view_->OpenFileSystem(filename, "File(*.bin)");
     if (okay) {
+        view_->ResetProgressBar();
         view_->SetTransferButtonStatus(true);
         view_->ShowTransferFile(*filename);
     }

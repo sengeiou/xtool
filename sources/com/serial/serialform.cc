@@ -11,7 +11,8 @@
 #include "ui_serialform.h"
 #include "serialform.h"
 #include "serial.h"
-#include "xtoolform.h"
+#include "xtool_model.h"
+#include "xtool_controller.h"
 
 namespace {
 const QSerialPort::BaudRate baudrate_table[] = {
@@ -101,11 +102,11 @@ void SerialForm::OnPushButtonClicked()
     }
 
     connect(serial, &SerialThread::RecvMessage,
-            master_, &XToolForm::OnReceiveMessage);
+            master_, &XToolModel::OnReceiveMessage);
     connect(serial, &SerialThread::Connected,
-            master_, &XToolForm::OnPortChangedStatus);
+            controller_, &XToolController::OnPortChangedStatus);
     connect(serial, &SerialThread::Disconnected,
-            master_, &XToolForm::OnPortChangedStatus);
+            controller_, &XToolController::OnPortChangedStatus);
     if (!serial->Start(port_->currentText(), param))
         delete serial;
 

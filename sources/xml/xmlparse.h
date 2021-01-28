@@ -15,11 +15,14 @@ public:
     const QList<XmlDataNode *> &root() {
         return root_;
     }
+    void AddXmlNode(XmlDataNode *node) {
+        root_.append(node);
+    }
     const QString &title() {
         return title_;
     }
-    void AddXmlNode(XmlDataNode *node) {
-        root_.append(node);
+    bool empty() const {
+        return root_.isEmpty();
     }
     
 private:
@@ -33,7 +36,6 @@ private:
     void ParseItemNode(QXmlStreamReader *reader,
                        XmlDataNode *node,
                        QXmlStreamReader::TokenType token);
-
 private:
     QString file_name_;
     QString title_;

@@ -7,6 +7,7 @@
 
 class QTextBrowser;
 class QString;
+class FileTransfer;
 
 class TransferView : public QWidget {
     Q_OBJECT
@@ -24,10 +25,15 @@ public:
     void SetTransferButtonText(const QString &);
     void SetProgressBarStatus(bool visible);
     void ShowText(const QString &text);
+    void SetModel(FileTransfer *model);
+
+protected:
+    void closeEvent(QCloseEvent* ev) override;
 
 private:
     Ui::TransferForm ui_;
     QTextBrowser *text_browser_;
+    FileTransfer *model_;
 };
 
 #endif //TRANSFER_VIEW_H_

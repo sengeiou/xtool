@@ -40,6 +40,9 @@ public:
     const QString &result_info() const {
         return result_;
     }
+    XmlDataNode *data() {
+        return data_;
+    }
 
 private slots:
     void OnItemActived();

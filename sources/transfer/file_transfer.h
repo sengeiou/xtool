@@ -12,7 +12,7 @@ class QByteArray;
 class QTimer;
 class OTAHeader;
 class StpOpcode;
-class XToolForm;
+class XToolModel;
 class FileTransfer;
 
 #pragma pack(1)
@@ -100,11 +100,12 @@ public:
         TRANSFER_PORT_CLOSED
     };
 
-    explicit FileTransfer(XToolForm *master);
+    explicit FileTransfer(XToolModel *master);
     ~FileTransfer();
     void FileMessageProcess(QByteArray *buf);
     bool StartFileTransfer();
     void StopFileTransfer();
+    void CloseProcess();
 
     void AddObserver(ObserverBase *obs) {
         observer_.AddObserver(obs);
@@ -141,7 +142,7 @@ private:
 
 private:
     QString filename_;
-    XToolForm *master_;
+    XToolModel *master_;
     QFile *file_;
     QByteArray *txbuf_;
     QTimer *timer_;

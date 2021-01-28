@@ -6,7 +6,7 @@
 #include <QString>
 
 #include "transfer/transfer_view.h"
-
+#include "transfer/file_transfer.h"
 
 TransferView::TransferView(QWidget *parent, QTextBrowser *text_browser)
     : QWidget(parent), text_browser_(text_browser)
@@ -66,7 +66,7 @@ void TransferView::SetTransferButtonStatus(bool enable)
 void TransferView::ResetProgressBar()
 {
     ui_.progressBar->setRange(0, 100);
-    ui_.progressBar->setValue(true);
+    ui_.progressBar->setValue(0);
     SetProgressBarStatus(true);
 }
 
@@ -83,4 +83,15 @@ void TransferView::SetProgressBarStatus(bool visible)
 void TransferView::ShowText(const QString &text)
 {
     text_browser_->append(text);
+}
+
+void TransferView::closeEvent(QCloseEvent* ev)
+{
+    QWidget::closeEvent(ev);
+    model_->CloseProcess();
+}
+
+void TransferView::SetModel(FileTransfer *model)
+{
+    model_ = model;
 }
