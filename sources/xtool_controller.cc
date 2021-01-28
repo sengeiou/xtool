@@ -9,7 +9,10 @@
 #include "xtool_view.h"
 #include "xtool_model.h"
 
-#include "com/serial/serialform.h"
+#include "com/serial/serial.h"
+#include "com/serial/serialport_controller.h"
+#include "com/serial/serialport_view.h"
+
 #include "xml/xmlparse.h"
 #include "xml/xmlwidget.h"
 
@@ -17,7 +20,7 @@
 XToolController::XToolController(XToolView *view, XToolModel *model,
                                  QObject *parent)
     : QObject(parent), ObserverBase(), view_(view), model_(model),
-      serial_form_(nullptr), transfer_controller_(nullptr)
+      serial_controller_(nullptr), transfer_controller_(nullptr)
 {
     //Connect events
     connect(view_->exit_, &QAction::triggered,
@@ -28,12 +31,16 @@ XToolController::XToolController(XToolView *view, XToolModel *model,
             this, &XToolController::OnOPenFileTransfer);
     connect(view_->open_, &QAction::triggered,
             this, &XToolController::OnOpenProjectFile);
+
     connect(view_->list_widget_, &QListWidget::itemClicked,
             this, &XToolController::OnListItemActived);
     connect(view_->start_btn_, &QPushButton::clicked,
             this, &XToolController::OnStartExecute);
     connect(view_->stop_btn_, &QPushButton::clicked,
             this, &XToolController::OnStopExecute);
+
+    connect(view_->toolbar_open_, &QAction::triggered,
+            this, &XToolController::OnOpenProjectFile);
     connect(view_->toolbar_conn_, &QAction::triggered,
             this, &XToolController::OnOpenSerialPort);
     connect(view_->toolbar_disconn_, &QAction::triggered,
@@ -53,20 +60,16 @@ XToolController::~XToolController()
 
 void XToolController::Update(int action, void *ptr)
 {
-    XmlWidgetItem *item;
     switch (action) {
     case XToolModel::XTOOL_EXECUTE_NEXT:
-        item = (XmlWidgetItem *)view_->next();
-        if (item == nullptr) {
-            OnStopExecute();
+        ExecuteNextItem();
+        break;
+    case XToolModel::XTOOL_EXECUTE_TIMEOUT:
+        if (view_->skip_chkbox_->isChecked())
+            ExecuteNextItem();
+        else
             GenerateStatisticsResult(view_->text_browser_);
-        } else if (item->breakpoint()) {
-            OnStopExecute();
-            GenerateStatisticsResult(view_->text_browser_);
-        } else {
-            ExecuteItem(item);
-        } break;
-
+        break;
     case XToolModel::XTOOL_RECVMSG_SHOW: {
         QByteArray *buf = (QByteArray *)ptr;
         QByteArray str(buf->toHex(' ').toUpper());
@@ -101,6 +104,23 @@ void XToolController::ExecuteItem(XmlWidgetItem *item)
 {
     ShowItem(item, view_->text_browser_, false);
     model_->ExecuteItem(item->data());
+}
+
+void XToolController::ExecuteNextItem()
+{
+    XmlWidgetItem *item = (XmlWidgetItem *)view_->next();
+    if (item == nullptr) {
+        OnStopExecute();
+        GenerateStatisticsResult(view_->text_browser_);
+        return;
+    }
+    if (item->breakpoint()) {
+        OnStopExecute();
+        GenerateStatisticsResult(view_->text_browser_);
+        return;
+    }
+
+    ExecuteItem(item);
 }
 
 void XToolController::ShowItem(QListWidgetItem *item, QTextBrowser *text,
@@ -139,8 +159,10 @@ void XToolController::AddInformationHeader(QTextBrowser *text, const QString &in
 
 void XToolController::GenerateStatisticsResult(QTextBrowser *text_browser)
 {
+    QColor old = text_browser->textColor();
     int i, count=0;
     text_browser->append("\n******** Statistics Information ********");
+    text_browser->setTextColor(QColor(255, 0, 0));
     for (i = 0; i <= view_->list_widget_->currentRow(); i++) {
         XmlWidgetItem *item = (XmlWidgetItem *)view_->list_widget_->item(i);
         if (!item->result() && !item->breakpoint()) {
@@ -154,9 +176,13 @@ void XToolController::GenerateStatisticsResult(QTextBrowser *text_browser)
         QString str = QString("Total: %1, Total errors: %2").arg(i).arg(count);
         text_browser->append(str);
     } else {
+
         QString str = QString("Total: %1").arg(count);
+        text_browser->setTextColor(QColor(0, 255, 0));
         text_browser->append("Successful!");
     }
+
+    text_browser->setTextColor(old);
 }
 
 void XToolController::OnOpenProjectFile()
@@ -172,15 +198,20 @@ void XToolController::OnOpenProjectFile()
 
 void XToolController::OnOpenSerialPort()
 {
-    SerialForm *form = serial_form_;
-    if (!form) {
-        form = new SerialForm(view_);
-        serial_form_ = form;
-        form->SetMasterForm(model_);
-        form->SetController(this);
-        form->setWindowFlags(Qt::Dialog | Qt::Popup);
+    SerialPortController *controller = serial_controller_;
+    if (controller == nullptr) {
+        SerialPortView *view = new SerialPortView(view_);
+        SerialThread *serial = new SerialThread();
+        controller = new SerialPortController(view, serial);
+        model_->SetSerialPort(serial);
+        serial_controller_ = controller;
+
+        connect(serial, &SerialThread::Connected,
+                this, &XToolController::OnPortChangedStatus);
+        connect(serial, &SerialThread::Disconnected,
+                this, &XToolController::OnPortChangedStatus);
     }
-    form->showNormal();
+    controller->Show();
 }
 
 void XToolController::OnOPenFileTransfer()

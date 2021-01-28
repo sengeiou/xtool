@@ -26,19 +26,19 @@ public:
         return data_->minor();
     }
     void set_breakpoint(bool enable) {
-        breakpoint_enabled_ = enable;
+        data_->set_breakpoint(enable);
     }
     bool breakpoint() const {
-        return breakpoint_enabled_;
+        return data_->breakpoint();
     }
     void set_result(bool okay) {
-        result_okay_ = okay;
+        data_->set_result(okay);
     }
     bool result() const {
-        return result_okay_;
+        return data_->result();
     }
     const QString &result_info() const {
-        return result_;
+        return data_->result_info();
     }
     XmlDataNode *data() {
         return data_;
@@ -48,10 +48,7 @@ private slots:
     void OnItemActived();
 
 private:
-    QString result_;
     XmlDataNode *data_;
-    bool breakpoint_enabled_;
-    bool result_okay_;
 };
 
 

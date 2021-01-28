@@ -7,5 +7,6 @@
    <file>images/clear.png</file>
    <file>images/connect.png</file>
    <file>images/disconnect.png</file>
+   <file>images/folder.png</file>
 </qresource>
 </RCC>

@@ -36,6 +36,7 @@ XToolView::XToolView(QWidget *parent)
     stop_btn_->setEnabled(false);
 
     QToolBar *toolbar = ui_->toolBar;
+    toolbar_open_ = toolbar->addAction(QIcon(":/images/folder.png"), "Open");
     toolbar_conn_ = toolbar->addAction(QIcon(":/images/connect.png"), "Connect");
     toolbar_disconn_ = toolbar->addAction(QIcon(":/images/disconnect.png"), "Disconnect");
     toolbar_setting_ = toolbar->addAction(QIcon(":/images/settings.png"), "Setting");

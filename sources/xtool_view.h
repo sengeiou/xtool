@@ -60,6 +60,7 @@ private:
     QLabel *status_label_;
 
     //Toolbar action
+    QAction *toolbar_open_;
     QAction *toolbar_conn_;
     QAction *toolbar_disconn_;
     QAction *toolbar_setting_;

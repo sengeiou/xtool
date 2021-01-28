@@ -3,10 +3,7 @@
 XmlWidgetItem::XmlWidgetItem(XmlDataNode *node,
     QListWidget *view)
     : QListWidgetItem(node->name(), view),
-      result_(),
-      data_(node),
-      breakpoint_enabled_(false),
-      result_okay_(true)
+      data_(node)
 {
 }
 

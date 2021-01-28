@@ -16,6 +16,10 @@ public:
     XmlDataNode();
     ~XmlDataNode();
 
+    void ResetStatus() {
+        result_okay_ = true;
+        exec_result_.clear();
+    }
     void AppendMinor(MinorItem *minor) {
         minor_.append(minor);
     }
@@ -40,12 +44,35 @@ public:
     QList<XmlDataNode::MinorItem *> &minor() {
         return minor_;
     }
+    void set_breakpoint(bool enable) {
+        breakpoint_enabled_ = enable;
+    }
+    bool breakpoint() const {
+        return breakpoint_enabled_;
+    }
+    void set_result(bool okay) {
+        result_okay_ = okay;
+    }
+    bool result() const {
+        return result_okay_;
+    }
+    const QString &result_info() const {
+        return exec_result_;
+    }
+    void set_result_info(const QString &info) {
+        exec_result_.clear();
+        exec_result_ = info;
+    }
 
 private:
     QList<MinorItem *> minor_;
     QString name_;
     QString major_;
     QString timeout_;
+
+    QString exec_result_;
+    bool breakpoint_enabled_;
+    bool result_okay_;
 };
 
 #endif //XML_NODE_H_

@@ -1,15 +1,51 @@
 #include <QSerialPort>
+#include <QSerialPortInfo>
 #include <QMutex>
+#include <QTimer>
 
 #include "serial.h"
 
+namespace {
+const QSerialPort::BaudRate baudrate_table[] = {
+    QSerialPort::Baud115200,
+    QSerialPort::Baud57600,
+    QSerialPort::Baud38400,
+    QSerialPort::Baud19200,
+    QSerialPort::Baud9600,
+    QSerialPort::Baud4800,
+    QSerialPort::Baud2400,
+    QSerialPort::Baud1200
+};
+
+const QSerialPort::DataBits databit_table[] = {
+    QSerialPort::Data8,
+    QSerialPort::Data7,
+    QSerialPort::Data6,
+    QSerialPort::Data5
+};
+
+const QSerialPort::StopBits stopbit_table[] = {
+    QSerialPort::OneStop,
+    QSerialPort::TwoStop
+};
+
+const QSerialPort::Parity parity_table[] = {
+    QSerialPort::NoParity,
+    QSerialPort::EvenParity,
+    QSerialPort::OddParity
+};
+}
 
 SerialThread::SerialThread(QObject *parent)
     : QThread(parent), actived_(0), port_updated_(0),
-      list_mutex_(new QMutex), send_timeout_(3000)
+      list_mutex_(new QMutex), port_refresh_timer_(new QTimer),
+      send_timeout_(3000)
 {
     tx_queue_ = new ByteArrayList();
     node_pool_ = new ByteArrayNodePool(8, 1024);
+    port_refresh_timer_->setSingleShot(false);
+    connect(port_refresh_timer_, &QTimer::timeout,
+            this, &SerialThread::ScanAvaliblePort);
 }
 
 SerialThread::~SerialThread()
@@ -19,13 +55,12 @@ SerialThread::~SerialThread()
         delete list_mutex_;
     delete tx_queue_;
     delete node_pool_;
+    delete port_refresh_timer_;
 }
 
-bool SerialThread::Start(const QString &portname,
-                         const SerialParam &param)
+bool SerialThread::Start(const QString &portname)
 {
     port_name_ = portname;
-    param_ = param;
     if (!actived_.load()) {
         actived_.store(1);
         start();
@@ -51,6 +86,46 @@ bool SerialThread::SendTo(const QByteArray &data)
     tx_queue_->Append(node);
     list_mutex_->unlock();
     return true;
+}
+
+void SerialThread::StartPortScan()
+{
+    ScanAvaliblePort();
+    port_refresh_timer_->start(1500);
+}
+
+void SerialThread::StopPortScan()
+{
+    port_refresh_timer_->stop();
+}
+
+void SerialThread::SetBaudrate(int index)
+{
+    param_.baudrate = baudrate_table[index];
+}
+
+void SerialThread::SetDatabit(int index)
+{
+    param_.data_bits = databit_table[index];
+}
+
+void SerialThread::SetStopbit(int index)
+{
+    param_.stop_bits = stopbit_table[index];
+}
+
+void SerialThread::SetParity(int index)
+{
+    param_.parity = parity_table[index];
+}
+
+void SerialThread::ScanAvaliblePort()
+{
+    for (const QSerialPortInfo &info:
+            QSerialPortInfo::availablePorts()) {
+        QString port = info.portName();
+        NotifyObservers(SERIAL_COM_ADD, &port);
+    }
 }
 
 void SerialThread::run()
@@ -115,4 +190,3 @@ _reinit:
     serial.close();
     emit this->Disconnected("Disconnected", false);
 }
-

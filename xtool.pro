@@ -2,8 +2,11 @@
 INCLUDEPATH = sources
 HEADERS =
 
-HEADERS += sources/com/serial/serialform.h
+
+HEADERS += sources/com/serial/serialport_view.h
+HEADERS += sources/com/serial/serialport_controller.h
 HEADERS += sources/com/serial/serial.h
+
 HEADERS += sources/xml/xmlparse.h
 HEADERS += sources/xml/xmlnode.h
 HEADERS += sources/xml/xmlwidget.h
@@ -23,13 +26,15 @@ HEADERS += sources/xtool_view.h
 
 # Source files
 SOURCES =
+
 SOURCES += sources/override.cc
 SOURCES += sources/main.cc
 SOURCES += sources/dlistbuf.cc
 
 SOURCES += sources/stp/stp.cc
 
-SOURCES += sources/com/serial/serialform.cc
+SOURCES += sources/com/serial/serialport_view.cc
+SOURCES += sources/com/serial/serialport_controller.cc
 SOURCES += sources/com/serial/serial.cc
 
 SOURCES += sources/xml/xmlparse.cc

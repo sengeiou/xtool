@@ -23,6 +23,7 @@ public:
     friend class SerialForm;
     enum {
         XTOOL_EXECUTE_NEXT,
+        XTOOL_EXECUTE_TIMEOUT,
         XTOOL_RECVMSG_SHOW,
         XTOOL_SENDMSG_SHOW,
     };
@@ -36,6 +37,7 @@ public:
     void ExecuteItem(XmlDataNode *item);
     void Stop();
     void CloseSerialPort();
+    void SetSerialPort(SerialThread *serial);
     void AddObserver(ObserverBase *obs) {
         observer_list_.AddObserver(obs);
     }
@@ -84,6 +86,7 @@ private:
     QTimer *retrans_timer_;
     int retrans_count_;
     std::function<void(QByteArray *)> process_fn_;
+    XmlDataNode *executing_node_;
 };
 
 #endif // XTOOL_MODEL_H

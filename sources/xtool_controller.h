@@ -9,10 +9,9 @@
 class XToolView;
 class XToolModel;
 class TransferController;
-class SerialForm;
+class SerialPortController;
 class XmlDataNode;
 class XmlWidgetItem;
-
 class QListWidgetItem;
 class QPoint;
 class QTextBrowser;
@@ -34,6 +33,7 @@ public:
 private:
     void GenerateDataList(const QList<XmlDataNode *> &root);
     void ExecuteItem(XmlWidgetItem *item);
+    void ExecuteNextItem();
     void ShowItem(QListWidgetItem *item, QTextBrowser *browser, bool clear);
     void AddInformationHeader(QTextBrowser *browser, const QString &info);
     void GenerateStatisticsResult(QTextBrowser *browser);
@@ -47,13 +47,12 @@ private slots:
     void OnListItemActived(QListWidgetItem *item);
     void OnStartExecute();
     void OnStopExecute();
-
     void OnListContextMenu(const QPoint &point);
 
 private:
     XToolView *view_;
     XToolModel *model_;
-    SerialForm *serial_form_;
+    SerialPortController *serial_controller_;
     TransferController *transfer_controller_;
 };
 

@@ -4,7 +4,6 @@
 #include "transfer/transfer_view.h"
 #include "transfer/file_transfer.h"
 
-#include "com/serial/serialform.h"
 #include "com/serial/serial.h"
 #include "xml/xmlparse.h"
 #include "xml/xmlwidget.h"
@@ -25,6 +24,11 @@ XToolModel::XToolModel(QObject *parent)
     waiting_ack_->resize(1024);
     timer_->setSingleShot(true);
     retrans_timer_->setSingleShot(true);
+
+    connect(timer_, &QTimer::timeout,
+            this, &XToolModel::OnTimeout);
+    connect(retrans_timer_, &QTimer::timeout,
+            this, &XToolModel::OnRetransmitTimeout);
     ResumeMessageProcess();
 }
 
@@ -80,6 +84,7 @@ void XToolModel::ExecuteItem(XmlDataNode *item)
     int timeout;
     buffer->clear();
     if (BuildPacket(item, buffer, &timeout)) {
+        executing_node_ = item;
         NotifyObservers(XTOOL_SENDMSG_SHOW, buffer);
         this->Send(*buffer);
         timer_->start(timeout);
@@ -102,6 +107,13 @@ void XToolModel::CloseSerialPort()
     }
 }
 
+void XToolModel::SetSerialPort(SerialThread *serial)
+{
+    serial_ = serial;
+    connect(serial_, &SerialThread::RecvMessage,
+            this, &XToolModel::OnReceiveMessage);
+}
+
 void XToolModel::OnReceiveMessage(ByteArrayNode *node)
 {
     process_fn_(node->data());
@@ -110,7 +122,9 @@ void XToolModel::OnReceiveMessage(ByteArrayNode *node)
 
 void XToolModel::OnTimeout()
 {
-    NotifyObservers(XTOOL_EXECUTE_NEXT, nullptr);
+    executing_node_->set_result(false);
+    executing_node_->set_result_info("Remote server no respond\n");
+    NotifyObservers(XTOOL_EXECUTE_TIMEOUT, nullptr);
 }
 
 void XToolModel::OnRetransmitTimeout()
@@ -166,8 +180,12 @@ bool XToolModel::MainMessageProcess(QByteArray *buf)
         return false;
 
     if (stp_->ProcessMessage(*buf)) {
+        executing_node_->set_result(true);
         NotifyObservers(XTOOL_EXECUTE_NEXT, nullptr);
         return true;
     }
+
+    executing_node_->set_result(false);
+    executing_node_->set_result_info("Receive data packet error\n");
     return false;
 }
