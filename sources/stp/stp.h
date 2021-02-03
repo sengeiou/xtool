@@ -89,7 +89,7 @@ public:
         *v = data;
     }
     char *Push(quint16 len) {
-        if (reinterpret_cast<int>(data_ - len) < 0)
+        if ((data_ - len) < buffer_)
             return nullptr;
         data_ -= len;
         len_ += len;

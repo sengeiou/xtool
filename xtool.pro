@@ -3,6 +3,7 @@ INCLUDEPATH = sources
 HEADERS =
 
 
+
 HEADERS += sources/com/serial/serialport_view.h
 HEADERS += sources/com/serial/serialport_controller.h
 HEADERS += sources/com/serial/serial.h
@@ -27,7 +28,8 @@ HEADERS += sources/xtool_view.h
 # Source files
 SOURCES =
 
-SOURCES += sources/override.cc
+
+#SOURCES += sources/override.cc
 SOURCES += sources/main.cc
 SOURCES += sources/dlistbuf.cc
 
@@ -49,6 +51,11 @@ SOURCES += sources/xtool_model.cc
 SOURCES += sources/xtool_controller.cc
 SOURCES += sources/xtool_view.cc
 
+# C++ Build flags
+unix:!macx {
+QMAKE_CXXFLAGS += -Wno-deprecated-copy
+QMAKE_CXXFLAGS += -Wno-class-memaccess
+}
 
 # Link libraries
 QT += widgets
