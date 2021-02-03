@@ -4,7 +4,6 @@
 #include <QString>
 #include <QObject>
 
-
 #include "observer.h"
 
 class QFile;

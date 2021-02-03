@@ -12,7 +12,11 @@
 #pragma pack(1)
 struct OTAHeader {
     enum {
+#ifdef CONFIG_PROTOBUF
+        MAX_PAYLOAD = 256 - 7,
+#else
         MAX_PAYLOAD = 256,
+#endif
     };
     quint16 maxno;
     quint16 seqno;

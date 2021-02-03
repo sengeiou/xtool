@@ -176,7 +176,7 @@ bool XToolModel::MainMessageProcess(QByteArray *buf)
 {
     StopTransmitTimer();
     NotifyObservers(XTOOL_RECVMSG_SHOW, buf);
-    if (xml_->empty())
+    if (xml_ == nullptr || xml_->empty())
         return false;
 
     if (stp_->ProcessMessage(*buf)) {

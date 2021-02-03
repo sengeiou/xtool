@@ -7,6 +7,10 @@
 #include "stp/stp.h"
 #include "xtool_model.h"
 
+#ifdef CONFIG_PROTOBUF
+#include "protobuf/ota.pb.h"
+#endif
+
 //File transfer subcommand
 #define OTA_FILE_REQ  0x01
 #define OTA_FILE_BKPT 0x02
@@ -177,7 +181,6 @@ bool FileRequestState::Send(FileTransfer *context)
 
 bool FileRequestState::Receive(FileTransfer *context, QByteArray *buf)
 {
-    const FileRequestStatus *sta;
     const StpL3Header *hdr;
     const quint8 *packet;
 
@@ -189,14 +192,20 @@ bool FileRequestState::Receive(FileTransfer *context, QByteArray *buf)
     if (hdr->minor != OTA_FILE_REQ)
         return false;
 
+#ifdef CONFIG_PROTOBUF
+    ota::FileRequest req;
+    bool okay = req.ParseFromArray(hdr->data, Netbuffer::ToCpu16(hdr->length));
+    if (!okay || req.battery() < 80)
+        return false;
+#else
     if (Netbuffer::ToCpu16(hdr->length) != sizeof(*sta))
         return false;
 
-    sta = (const FileRequestStatus *)hdr->data;
+    const FileRequestStatus *sta = (const FileRequestStatus *)hdr->data;
     //quint16 fsize = Netbuffer::ToCpu16(sta->max_file_size);
     if (sta->bat_power < 80)
         return false;
-
+#endif
     context->SetTranferState(&context->bkpt_state_);
     return context->SendProcess();
 }
@@ -213,9 +222,7 @@ bool FileBreakpointState::Send(FileTransfer *context)
 
 bool FileBreakpointState::Receive(FileTransfer *context, QByteArray *buf)
 {
-    const FileTransferContext *fbkpt;
     const quint8 *packet;
-
     packet = context->stp_->ToL2(*buf, nullptr);
     if (packet[0] != STP_OTA_CLASS)
         return false;
@@ -223,6 +230,32 @@ bool FileBreakpointState::Receive(FileTransfer *context, QByteArray *buf)
     const StpL3Header *hdr = (const StpL3Header *)&packet[1];
     if (hdr->minor != OTA_FILE_BKPT)
         return false;
+
+    OTAHeader *ota = context->ota_;
+
+#ifdef CONFIG_PROTOBUF
+    ota::File ota_file;
+    bool okay = ota_file.ParseFromArray(hdr->data, Netbuffer::ToCpu16(hdr->length));
+    if (!okay || ota->maxno != ota_file.maxno()) {
+        context->SetTranferState(&context->send_state_);
+        return context->SendProcess();
+    }
+
+    QFile *file = context->file_;
+    QByteArray ba = file->readAll();
+    quint16 no = (quint16)ota_file.no();
+    quint32 file_crc = context->FileChecksum((const quint8 *)ba.constData(),
+                                     no * OTAHeader::MAX_PAYLOAD,
+                                     0);
+    if (file_crc == ota_file.crc()) {
+        ota->seqno = no + 1;
+        context->file_crc_ = file_crc;
+        context->file_sent_size_ = no * OTAHeader::MAX_PAYLOAD;
+        file->seek(context->file_sent_size_);
+    } else {
+        file->seek(0);
+    }
+#else
 
     quint16 len = Netbuffer::ToCpu16(hdr->length);
     if (len == 0) {
@@ -232,8 +265,7 @@ bool FileBreakpointState::Receive(FileTransfer *context, QByteArray *buf)
     if (len != sizeof(*fbkpt))
         return false;
 
-    OTAHeader *ota = context->ota_;
-    fbkpt = (const FileTransferContext *)hdr->data;
+    const FileTransferContext *fbkpt = (const FileTransferContext *)hdr->data;
     quint16 maxno = Netbuffer::ToCpu16(fbkpt->maxno);
     if (ota->maxno != maxno) {
         context->SetTranferState(&context->send_state_);
@@ -254,7 +286,7 @@ bool FileBreakpointState::Receive(FileTransfer *context, QByteArray *buf)
     } else {
         file->seek(0);
     }
-
+#endif
     context->SetTranferState(&context->send_state_);
     return context->SendProcess();
 }
@@ -265,9 +297,8 @@ bool FileSendState::Send(FileTransfer *context)
     QByteArray *txbuf = context->txbuf_;
     StpOpcode *stp = context->stp_;
     QFile *file = context->file_;
-    char buffer[4 + OTAHeader::MAX_PAYLOAD];
-    OTAHeader *ota;
     qint64 ret;
+    quint16 pkglen;
 
     // Send completed
     if (file->atEnd()) {
@@ -277,6 +308,25 @@ bool FileSendState::Send(FileTransfer *context)
         return context->SendProcess();
     }
 
+#ifdef CONFIG_PROTOBUF
+    char buffer[OTAHeader::MAX_PAYLOAD + 16];
+    //Read error
+    ret = file->read(buffer, OTAHeader::MAX_PAYLOAD);
+    if (ret < 0) {
+        context->CloseFile();
+        return false;
+    }
+    context->file_crc_ = context->FileChecksum((const quint8 *)buffer,
+            (quint32)ret, context->file_crc_);
+
+    ota::File ota_file;
+    ota_file.set_data(buffer, ret);
+    ota_file.set_maxno(context->ota_->maxno);
+    ota_file.set_no(context->ota_->seqno);
+    ota_file.SerializeToArray(buffer, ota_file.ByteSizeLong());
+    pkglen = (quint16)ota_file.ByteSizeLong();
+#else
+    char buffer[4 + OTAHeader::MAX_PAYLOAD];
     //Read error
     ret = file->read(&buffer[4], OTAHeader::MAX_PAYLOAD);
     if (ret < 0) {
@@ -284,17 +334,19 @@ bool FileSendState::Send(FileTransfer *context)
         return false;
     }
 
-    context->file_sent_size_ += ret;
     context->file_crc_ = context->FileChecksum((const quint8 *)&buffer[4],
             (quint32)ret, context->file_crc_);
-    ota = reinterpret_cast<OTAHeader *>(buffer);
+    OTAHeader *ota = reinterpret_cast<OTAHeader *>(buffer);
     ota->maxno = Netbuffer::ToNet16(context->ota_->maxno);
     ota->seqno = Netbuffer::ToNet16(context->ota_->seqno);
+    pkglen = ret + sizeof(OTAHeader);
+#endif
+    context->file_sent_size_ += ret;
     context->ota_->seqno++;
     context->file_percent_ = context->ota_->seqno * 100 / context->ota_->maxno;
     context->observer_.Notify(FileTransfer::TRANSFER_SHOW_PROGRESS,
                               &context->file_percent_);
-    stp->AppendMessage(OTA_FILE_DATA, buffer, ret+sizeof(OTAHeader));
+    stp->AppendMessage(OTA_FILE_DATA, buffer, pkglen);
     stp->GeneratePacket(STP_OTA_CLASS, 0, txbuf);
     return context->master_->Send(*txbuf);
 }
@@ -311,8 +363,18 @@ bool FileStopState::Send(FileTransfer *context)
 {
     QByteArray *txbuf = context->txbuf_;
     StpOpcode *stp = context->stp_;
+
+#ifdef CONFIG_PROTOBUF
+    ota::FileCheck file_chk;
+    char buffer[10];
+    file_chk.set_crc(context->file_crc_);
+    quint16 pkglen = (quint16)file_chk.ByteSizeLong();
+    file_chk.SerializeToArray(buffer, pkglen);
+    stp->AppendMessage(OTA_FILE_CMP, buffer, pkglen);
+#else
     quint32 crc = Netbuffer::ToNet32(context->file_crc_);
     stp->AppendMessage(OTA_FILE_CMP, (const char *)&crc, sizeof(crc));
+#endif
     stp->GeneratePacket(STP_OTA_CLASS, 0, txbuf);
     return context->master_->Send(*txbuf);
 }
