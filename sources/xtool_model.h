@@ -56,7 +56,9 @@ public:
     QString *filename() {
         return &filename_;
     }
-
+    SerialThread *serial() const {
+        return serial_;
+    }
 public slots:
     void OnReceiveMessage(ByteArrayNode *);
 

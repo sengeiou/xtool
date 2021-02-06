@@ -26,6 +26,7 @@ XToolView::XToolView(QWidget *parent)
     exit_ = ui_->actionExit;
     conn_ = ui_->actionConnect;
     about_ = ui_->actionAbout;
+    test_ = ui_->actionTest;
     transfer_ = ui_->actionSend_File;
     list_widget_ = ui_->listWidget;
     text_browser_ = ui_->textBrowser;
@@ -135,6 +136,11 @@ void XToolView::ClearLogText()
 void XToolView::ClearListWidget()
 {
     list_widget_->clear();
+}
+
+void XToolView::AppendText(const QString &text)
+{
+    text_browser_->append(text);
 }
 
 QListWidgetItem *XToolView::current() const

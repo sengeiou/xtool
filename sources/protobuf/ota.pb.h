@@ -229,7 +229,7 @@ class File PROTOBUF_FINAL :
   void _internal_set_no(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // uint32 crc = 6;
+  // fixed32 crc = 6;
   bool has_crc() const;
   private:
   bool _internal_has_crc() const;
@@ -673,7 +673,7 @@ inline void File::set_no(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:ota.File.no)
 }
 
-// uint32 crc = 6;
+// fixed32 crc = 6;
 inline bool File::_internal_has_crc() const {
   return field_case() == kCrc;
 }

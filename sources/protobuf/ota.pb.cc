@@ -117,7 +117,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_ota_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\tota.proto\022\003ota\"I\n\004File\022\r\n\005maxno\030\001 \002(\005\022"
-  "\n\n\002no\030\002 \002(\005\022\r\n\003crc\030\006 \001(\rH\000\022\016\n\004data\030\007 \001(\014"
+  "\n\n\002no\030\002 \002(\005\022\r\n\003crc\030\006 \001(\007H\000\022\016\n\004data\030\007 \001(\014"
   "H\000B\007\n\005field\"1\n\013FileRequest\022\021\n\tfmax_size\030"
   "\001 \002(\r\022\017\n\007battery\030\002 \002(\r\"\030\n\tFileCheck\022\013\n\003c"
   "rc\030\001 \002(\rB\002H\001"
@@ -284,11 +284,11 @@ const char* File::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::inter
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 crc = 6;
+      // fixed32 crc = 6;
       case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
-          _internal_set_crc(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
-          CHK_(ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 53)) {
+          _internal_set_crc(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint32>(ptr));
+          ptr += sizeof(::PROTOBUF_NAMESPACE_ID::uint32);
         } else goto handle_unusual;
         continue;
       // bytes data = 7;
@@ -344,7 +344,7 @@ failure:
   switch (field_case()) {
     case kCrc: {
       target = stream->EnsureSpace(target);
-      target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->_internal_crc(), target);
+      target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFixed32ToArray(6, this->_internal_crc(), target);
       break;
     }
     case kData: {
@@ -405,11 +405,9 @@ size_t File::ByteSizeLong() const {
   (void) cached_has_bits;
 
   switch (field_case()) {
-    // uint32 crc = 6;
+    // fixed32 crc = 6;
     case kCrc: {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->_internal_crc());
+      total_size += 1 + 4;
       break;
     }
     // bytes data = 7;

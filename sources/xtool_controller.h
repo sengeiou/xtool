@@ -48,6 +48,7 @@ private slots:
     void OnStartExecute();
     void OnStopExecute();
     void OnListContextMenu(const QPoint &point);
+    void OnTest();
 
 private:
     XToolView *view_;

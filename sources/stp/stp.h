@@ -7,7 +7,10 @@
 
 #define CPU_LITTLE_ENDIAN //??
 
-#define STP_OTA_CLASS 0x01
+#define STP_OTA_CLASS     0x01
+#define STP_INFO_CLASS    0x02
+#define STP_SETTING_CLASS 0x03
+#define STP_REMIND_CLASS  0x08
 
 #pragma pack(1)
 struct OTAHeader {

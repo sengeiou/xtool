@@ -16,6 +16,10 @@
 #include "xml/xmlparse.h"
 #include "xml/xmlwidget.h"
 
+#include "test/testform_view.h"
+#include "test/test_controller.h"
+#include "test/test_model.h"
+
 
 XToolController::XToolController(XToolView *view, XToolModel *model,
                                  QObject *parent)
@@ -49,6 +53,9 @@ XToolController::XToolController(XToolView *view, XToolModel *model,
             view_, &XToolView::ClearLogText);
     connect(view_->list_widget_, &QListWidget::customContextMenuRequested,
             this, &XToolController::OnListContextMenu);
+
+    connect(view_->test_, &QAction::triggered,
+            this, &XToolController::OnTest);
 
     model_->AddObserver(this);
 }
@@ -282,5 +289,13 @@ void XToolController::OnListContextMenu(const QPoint &point)
             }
         }
     }
+}
+
+void XToolController::OnTest()
+{
+    TestFormView *view = new TestFormView(view_);
+    TestModel *model = new TestModel(model_);
+    TestController controller(view, model);
+    controller.Run();
 }
 

@@ -1,7 +1,10 @@
 # Header files
 INCLUDEPATH = sources
-HEADERS =
+HEADERS = \
+    sources/test/test_controller.h \
+    sources/test/test_model.h
 
+HEADERS += sources/test/testform_view.h
 HEADERS += sources/com/serial/serialport_view.h
 HEADERS += sources/com/serial/serialport_controller.h
 HEADERS += sources/com/serial/serial.h
@@ -20,7 +23,11 @@ HEADERS += sources/xtool_controller.h
 HEADERS += sources/xtool_view.h
 
 # Source files
-SOURCES =
+SOURCES = \
+    sources/test/test_controller.cc \
+    sources/test/test_model.cc
+
+SOURCES += sources/test/testform_view.cc
 SOURCES += sources/main.cc
 SOURCES += sources/dlistbuf.cc
 SOURCES += sources/stp/stp.cc
@@ -38,6 +45,7 @@ SOURCES += sources/xtool_controller.cc
 SOURCES += sources/xtool_view.cc
 
 SOURCES += sources/protobuf/ota.pb.cc
+SOURCES += sources/protobuf/remind.pb.cc
 
 # C++ Build flags
 unix:!macx {
@@ -63,7 +71,11 @@ RESOURCES   = xtool.qrc
 RC_ICONS = images/main_icon.ico
 
 # Form
-FORMS =
+FORMS = \
+    forms/messageform.ui
+
+FORMS += forms/callform.ui
+FORMS += forms/testform.ui
 FORMS += forms/transferform.ui
 FORMS += forms/serialform.ui
 FORMS += forms/xtoolform.ui

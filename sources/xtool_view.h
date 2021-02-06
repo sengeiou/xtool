@@ -37,6 +37,7 @@ public:
     void SetStatusBarText(const QString &text);
     void ClearLogText();
     void ClearListWidget();
+    void AppendText(const QString &text);
     QListWidgetItem *current() const;
     QListWidgetItem *next() const;
     QListWidgetItem *item_at(const QPoint &);
@@ -50,6 +51,7 @@ private:
     QAction *exit_;
     QAction *conn_;
     QAction *about_;
+    QAction *test_;
     QAction *transfer_;
     QListWidget *list_widget_;
     QTextBrowser *text_browser_;

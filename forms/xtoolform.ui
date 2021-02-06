@@ -95,7 +95,7 @@
      <x>0</x>
      <y>0</y>
      <width>725</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -117,6 +117,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionTest"/>
    </widget>
    <widget class="QMenu" name="menuTransfer">
     <property name="title">
@@ -164,6 +165,11 @@
   <action name="actionSend_File">
    <property name="text">
     <string>Send File</string>
+   </property>
+  </action>
+  <action name="actionTest">
+   <property name="text">
+    <string>Test</string>
    </property>
   </action>
  </widget>
