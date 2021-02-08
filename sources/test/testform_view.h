@@ -12,6 +12,7 @@ namespace Ui {
     class TestFormDialog;
     class CallingTest;
     class MessageTest;
+    class DeviceInfoTest;
 } // namespace Ui
 
 
@@ -47,6 +48,22 @@ private:
     Ui::MessageTest *ui_;
 };
 
+//Device class
+class TestDeviceView : public QWidget {
+    Q_OBJECT
+
+public:
+    explicit TestDeviceView(QWidget *parent = nullptr);
+    ~TestDeviceView();
+
+    QPushButton *button() const;
+    QPushButton *clear_button() const;
+    void ShowText(const QString &text) const;
+    void Clear();
+private:
+    Ui::DeviceInfoTest *ui_;
+};
+
 
 class TestFormView : public QDialog {
     Q_OBJECT
@@ -56,7 +73,8 @@ public:
         NONE    = 0,
         CALLING = 1,
         MESSAGE = 2,
-        SETTING = 3
+        SETTING = 3,
+        DEVINFO = 4,
     };
     friend class TestController;
     explicit TestFormView(XToolView *mview, QDialog *parent = nullptr);

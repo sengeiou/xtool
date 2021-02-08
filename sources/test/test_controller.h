@@ -25,6 +25,7 @@ private slots:
     void OnTestItemActived(int index);
     void OnStartCalling(void);
     void OnSendTextMessage(void);
+    void OnReadDeviceInformation(void);
 
 private:
     TestFormView *view_;

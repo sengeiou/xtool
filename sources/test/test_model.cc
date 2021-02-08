@@ -9,13 +9,15 @@
 #include "xtool_model.h"
 
 #include "protobuf/remind.pb.h"
+#include "protobuf/devinfo.pb.h"
 
 TestModel::TestModel(XToolModel *model, QObject *parent)
     : QObject(parent),
       stp_(new StpOpcode),
       txbuf_(new QByteArray),
       timer_(new QTimer),
-      xmodel_(model)
+      xmodel_(model),
+      recv_fn_(nullptr)
 {
     txbuf_->resize(512);
     timer_->setSingleShot(true);
@@ -43,6 +45,7 @@ bool TestModel::StartCalling(const QString &name, const QString &phone)
     calling.set_phone(phone.toStdString());
     calling.set_people(name.toStdString());
     calling.SerializeToArray(buffer, calling.ByteSizeLong());
+    SetReceiveProcess(nullptr);
     return SendPacket(STP_REMIND_CLASS, 0x02, buffer, (quint16)calling.ByteSizeLong());
 }
 
@@ -60,7 +63,14 @@ bool TestModel::SendTextMessage(const QString &name, const QString &phone, int t
     message.set_type((remind::Message::Type)type);
     message.set_text(text.toStdString());
     message.SerializeToArray(buffer, message.ByteSizeLong());
+    SetReceiveProcess(nullptr);
     return SendPacket(STP_REMIND_CLASS, 0x01, buffer, (quint16)message.ByteSizeLong());
+}
+
+bool TestModel::ReadDeviceInformation(void)
+{
+    SetReceiveProcess(&TestModel::UnpackDeviceInformation);
+    return SendPacket(STP_INFO_CLASS, 0x01, nullptr, 0);
 }
 
 bool TestModel::SendPacket(int major, int minor, const char *buffer, quint16 len)
@@ -98,15 +108,23 @@ bool TestModel::ReceiveProcess(QByteArray *buf)
             str = "Error: major number is not matched!";
             goto _failed;
         }
-        if (len != 3) {
-            str = "Error: packet length is not matched!";
+        if (packet[1] != minor_) {
+            str = "Error: minor number is not matched!";
             goto _failed;
         }
-        if (packet[1] != minor_ || packet[2] != 0) {
-            str = "Error: minor number is not matched or result is error!";
+        if (len < 3 || (len == 3 && packet[2] != 0)) {
+            str = "Error: packet length is not matched or result error!";
             goto _failed;
         }
-
+        if (len >= 4) {
+            if (recv_fn_) {
+                quint16 data_len = Netbuffer::ByteToCpu16(&packet[2]);
+                if (!(this->*recv_fn_)(&packet[4], data_len)) {
+                    str = "Error: data packet is invalid\n";
+                    goto _failed;
+                }
+            }
+        }
         str = "Send successful!";
         Notify(SEND_COMPLETED, &str);
         return true;
@@ -115,6 +133,16 @@ bool TestModel::ReceiveProcess(QByteArray *buf)
 _failed:
     Notify(SEND_FAILED, &str);
     return false;
+}
+
+bool TestModel::UnpackDeviceInformation(const quint8 *packet, quint16 len)
+{
+    info::Device dinfo;
+    bool result;
+    result = dinfo.ParseFromArray(packet, len);
+    if (result)
+        Notify(DEVINFO_PACKET, &dinfo);
+    return result;
 }
 
 void TestModel::OnTimeout()
