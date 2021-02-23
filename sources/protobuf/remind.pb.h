@@ -32,6 +32,7 @@
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
+#include "time.pb.h"
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_remind_2eproto
@@ -262,18 +263,23 @@ class Call PROTOBUF_FINAL :
   std::string* _internal_mutable_people();
   public:
 
-  // required fixed32 timestamp = 1;
+  // required .proto.time.UnixTimestamp timestamp = 1;
   bool has_timestamp() const;
   private:
   bool _internal_has_timestamp() const;
   public:
   void clear_timestamp();
-  ::PROTOBUF_NAMESPACE_ID::uint32 timestamp() const;
-  void set_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  const ::proto::time::UnixTimestamp& timestamp() const;
+  ::proto::time::UnixTimestamp* release_timestamp();
+  ::proto::time::UnixTimestamp* mutable_timestamp();
+  void set_allocated_timestamp(::proto::time::UnixTimestamp* timestamp);
   private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_timestamp() const;
-  void _internal_set_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  const ::proto::time::UnixTimestamp& _internal_timestamp() const;
+  ::proto::time::UnixTimestamp* _internal_mutable_timestamp();
   public:
+  void unsafe_arena_set_allocated_timestamp(
+      ::proto::time::UnixTimestamp* timestamp);
+  ::proto::time::UnixTimestamp* unsafe_arena_release_timestamp();
 
   // @@protoc_insertion_point(class_scope:remind.Call)
  private:
@@ -289,7 +295,7 @@ class Call PROTOBUF_FINAL :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr phone_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr people_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 timestamp_;
+  ::proto::time::UnixTimestamp* timestamp_;
   friend struct ::TableStruct_remind_2eproto;
 };
 // -------------------------------------------------------------------
@@ -513,18 +519,23 @@ class Message PROTOBUF_FINAL :
   std::string* _internal_mutable_people();
   public:
 
-  // required fixed32 timestamp = 1;
+  // required .proto.time.UnixTimestamp timestamp = 1;
   bool has_timestamp() const;
   private:
   bool _internal_has_timestamp() const;
   public:
   void clear_timestamp();
-  ::PROTOBUF_NAMESPACE_ID::uint32 timestamp() const;
-  void set_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  const ::proto::time::UnixTimestamp& timestamp() const;
+  ::proto::time::UnixTimestamp* release_timestamp();
+  ::proto::time::UnixTimestamp* mutable_timestamp();
+  void set_allocated_timestamp(::proto::time::UnixTimestamp* timestamp);
   private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_timestamp() const;
-  void _internal_set_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  const ::proto::time::UnixTimestamp& _internal_timestamp() const;
+  ::proto::time::UnixTimestamp* _internal_mutable_timestamp();
   public:
+  void unsafe_arena_set_allocated_timestamp(
+      ::proto::time::UnixTimestamp* timestamp);
+  ::proto::time::UnixTimestamp* unsafe_arena_release_timestamp();
 
   // required .remind.Message.Type type = 2 [default = TEXT];
   bool has_type() const;
@@ -554,7 +565,7 @@ class Message PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr phone_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr text_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr people_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 timestamp_;
+  ::proto::time::UnixTimestamp* timestamp_;
   int type_;
   friend struct ::TableStruct_remind_2eproto;
 };
@@ -717,32 +728,83 @@ class Battery PROTOBUF_FINAL :
 #endif  // __GNUC__
 // Call
 
-// required fixed32 timestamp = 1;
+// required .proto.time.UnixTimestamp timestamp = 1;
 inline bool Call::_internal_has_timestamp() const {
   bool value = (_has_bits_[0] & 0x00000004u) != 0;
+  PROTOBUF_ASSUME(!value || timestamp_ != nullptr);
   return value;
 }
 inline bool Call::has_timestamp() const {
   return _internal_has_timestamp();
 }
-inline void Call::clear_timestamp() {
-  timestamp_ = 0u;
-  _has_bits_[0] &= ~0x00000004u;
+inline const ::proto::time::UnixTimestamp& Call::_internal_timestamp() const {
+  const ::proto::time::UnixTimestamp* p = timestamp_;
+  return p != nullptr ? *p : reinterpret_cast<const ::proto::time::UnixTimestamp&>(
+      ::proto::time::_UnixTimestamp_default_instance_);
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Call::_internal_timestamp() const {
-  return timestamp_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Call::timestamp() const {
+inline const ::proto::time::UnixTimestamp& Call::timestamp() const {
   // @@protoc_insertion_point(field_get:remind.Call.timestamp)
   return _internal_timestamp();
 }
-inline void Call::_internal_set_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _has_bits_[0] |= 0x00000004u;
-  timestamp_ = value;
+inline void Call::unsafe_arena_set_allocated_timestamp(
+    ::proto::time::UnixTimestamp* timestamp) {
+  if (GetArena() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(timestamp_);
+  }
+  timestamp_ = timestamp;
+  if (timestamp) {
+    _has_bits_[0] |= 0x00000004u;
+  } else {
+    _has_bits_[0] &= ~0x00000004u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:remind.Call.timestamp)
 }
-inline void Call::set_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_timestamp(value);
-  // @@protoc_insertion_point(field_set:remind.Call.timestamp)
+inline ::proto::time::UnixTimestamp* Call::release_timestamp() {
+  _has_bits_[0] &= ~0x00000004u;
+  ::proto::time::UnixTimestamp* temp = timestamp_;
+  timestamp_ = nullptr;
+  if (GetArena() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+  return temp;
+}
+inline ::proto::time::UnixTimestamp* Call::unsafe_arena_release_timestamp() {
+  // @@protoc_insertion_point(field_release:remind.Call.timestamp)
+  _has_bits_[0] &= ~0x00000004u;
+  ::proto::time::UnixTimestamp* temp = timestamp_;
+  timestamp_ = nullptr;
+  return temp;
+}
+inline ::proto::time::UnixTimestamp* Call::_internal_mutable_timestamp() {
+  _has_bits_[0] |= 0x00000004u;
+  if (timestamp_ == nullptr) {
+    auto* p = CreateMaybeMessage<::proto::time::UnixTimestamp>(GetArena());
+    timestamp_ = p;
+  }
+  return timestamp_;
+}
+inline ::proto::time::UnixTimestamp* Call::mutable_timestamp() {
+  // @@protoc_insertion_point(field_mutable:remind.Call.timestamp)
+  return _internal_mutable_timestamp();
+}
+inline void Call::set_allocated_timestamp(::proto::time::UnixTimestamp* timestamp) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(timestamp_);
+  }
+  if (timestamp) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(timestamp)->GetArena();
+    if (message_arena != submessage_arena) {
+      timestamp = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, timestamp, submessage_arena);
+    }
+    _has_bits_[0] |= 0x00000004u;
+  } else {
+    _has_bits_[0] &= ~0x00000004u;
+  }
+  timestamp_ = timestamp;
+  // @@protoc_insertion_point(field_set_allocated:remind.Call.timestamp)
 }
 
 // required string phone = 2;
@@ -895,32 +957,83 @@ inline void Call::set_allocated_people(std::string* people) {
 
 // Message
 
-// required fixed32 timestamp = 1;
+// required .proto.time.UnixTimestamp timestamp = 1;
 inline bool Message::_internal_has_timestamp() const {
   bool value = (_has_bits_[0] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || timestamp_ != nullptr);
   return value;
 }
 inline bool Message::has_timestamp() const {
   return _internal_has_timestamp();
 }
-inline void Message::clear_timestamp() {
-  timestamp_ = 0u;
-  _has_bits_[0] &= ~0x00000008u;
+inline const ::proto::time::UnixTimestamp& Message::_internal_timestamp() const {
+  const ::proto::time::UnixTimestamp* p = timestamp_;
+  return p != nullptr ? *p : reinterpret_cast<const ::proto::time::UnixTimestamp&>(
+      ::proto::time::_UnixTimestamp_default_instance_);
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Message::_internal_timestamp() const {
-  return timestamp_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Message::timestamp() const {
+inline const ::proto::time::UnixTimestamp& Message::timestamp() const {
   // @@protoc_insertion_point(field_get:remind.Message.timestamp)
   return _internal_timestamp();
 }
-inline void Message::_internal_set_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _has_bits_[0] |= 0x00000008u;
-  timestamp_ = value;
+inline void Message::unsafe_arena_set_allocated_timestamp(
+    ::proto::time::UnixTimestamp* timestamp) {
+  if (GetArena() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(timestamp_);
+  }
+  timestamp_ = timestamp;
+  if (timestamp) {
+    _has_bits_[0] |= 0x00000008u;
+  } else {
+    _has_bits_[0] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:remind.Message.timestamp)
 }
-inline void Message::set_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_timestamp(value);
-  // @@protoc_insertion_point(field_set:remind.Message.timestamp)
+inline ::proto::time::UnixTimestamp* Message::release_timestamp() {
+  _has_bits_[0] &= ~0x00000008u;
+  ::proto::time::UnixTimestamp* temp = timestamp_;
+  timestamp_ = nullptr;
+  if (GetArena() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+  return temp;
+}
+inline ::proto::time::UnixTimestamp* Message::unsafe_arena_release_timestamp() {
+  // @@protoc_insertion_point(field_release:remind.Message.timestamp)
+  _has_bits_[0] &= ~0x00000008u;
+  ::proto::time::UnixTimestamp* temp = timestamp_;
+  timestamp_ = nullptr;
+  return temp;
+}
+inline ::proto::time::UnixTimestamp* Message::_internal_mutable_timestamp() {
+  _has_bits_[0] |= 0x00000008u;
+  if (timestamp_ == nullptr) {
+    auto* p = CreateMaybeMessage<::proto::time::UnixTimestamp>(GetArena());
+    timestamp_ = p;
+  }
+  return timestamp_;
+}
+inline ::proto::time::UnixTimestamp* Message::mutable_timestamp() {
+  // @@protoc_insertion_point(field_mutable:remind.Message.timestamp)
+  return _internal_mutable_timestamp();
+}
+inline void Message::set_allocated_timestamp(::proto::time::UnixTimestamp* timestamp) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(timestamp_);
+  }
+  if (timestamp) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(timestamp)->GetArena();
+    if (message_arena != submessage_arena) {
+      timestamp = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, timestamp, submessage_arena);
+    }
+    _has_bits_[0] |= 0x00000008u;
+  } else {
+    _has_bits_[0] &= ~0x00000008u;
+  }
+  timestamp_ = timestamp;
+  // @@protoc_insertion_point(field_set_allocated:remind.Message.timestamp)
 }
 
 // required .remind.Message.Type type = 2 [default = TEXT];

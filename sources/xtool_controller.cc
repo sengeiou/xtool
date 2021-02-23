@@ -102,8 +102,10 @@ void XToolController::GenerateDataList(const QList<XmlDataNode *> &root)
 {
     view_->ClearListWidget();
     for (XmlDataNode *node : root) {
-        if (node) 
-            view_->CreateListWidget(new XmlWidgetItem(node));
+        if (node) {
+            XmlWidgetItem *item = new XmlWidgetItem(node, nullptr);
+            view_->CreateListWidget(item);
+        }
     }
 }
 

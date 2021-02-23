@@ -47,7 +47,7 @@ struct TableStruct_devinfo_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[1]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -55,11 +55,15 @@ struct TableStruct_devinfo_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_devinfo_2eproto;
 namespace info {
+class Battery;
+class BatteryDefaultTypeInternal;
+extern BatteryDefaultTypeInternal _Battery_default_instance_;
 class Device;
 class DeviceDefaultTypeInternal;
 extern DeviceDefaultTypeInternal _Device_default_instance_;
 }  // namespace info
 PROTOBUF_NAMESPACE_OPEN
+template<> ::info::Battery* Arena::CreateMaybeMessage<::info::Battery>(Arena*);
 template<> ::info::Device* Arena::CreateMaybeMessage<::info::Device>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace info {
@@ -111,6 +115,30 @@ inline bool Device_Model_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, Device_Model* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Device_Model>(
     Device_Model_descriptor(), name, value);
+}
+enum Battery_Status : int {
+  Battery_Status_IDLE = 0,
+  Battery_Status_CHARGING = 1,
+  Battery_Status_CHARGE_COMPLETED = 2
+};
+bool Battery_Status_IsValid(int value);
+constexpr Battery_Status Battery_Status_Status_MIN = Battery_Status_IDLE;
+constexpr Battery_Status Battery_Status_Status_MAX = Battery_Status_CHARGE_COMPLETED;
+constexpr int Battery_Status_Status_ARRAYSIZE = Battery_Status_Status_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Battery_Status_descriptor();
+template<typename T>
+inline const std::string& Battery_Status_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, Battery_Status>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function Battery_Status_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    Battery_Status_descriptor(), enum_t_value);
+}
+inline bool Battery_Status_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, Battery_Status* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Battery_Status>(
+    Battery_Status_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -413,6 +441,201 @@ class Device PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::uint32 hardware_ver_;
   friend struct ::TableStruct_devinfo_2eproto;
 };
+// -------------------------------------------------------------------
+
+class Battery PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:info.Battery) */ {
+ public:
+  inline Battery() : Battery(nullptr) {}
+  virtual ~Battery();
+
+  Battery(const Battery& from);
+  Battery(Battery&& from) noexcept
+    : Battery() {
+    *this = ::std::move(from);
+  }
+
+  inline Battery& operator=(const Battery& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Battery& operator=(Battery&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const Battery& default_instance();
+
+  static inline const Battery* internal_default_instance() {
+    return reinterpret_cast<const Battery*>(
+               &_Battery_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(Battery& a, Battery& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Battery* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Battery* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Battery* New() const final {
+    return CreateMaybeMessage<Battery>(nullptr);
+  }
+
+  Battery* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<Battery>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const Battery& from);
+  void MergeFrom(const Battery& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Battery* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "info.Battery";
+  }
+  protected:
+  explicit Battery(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_devinfo_2eproto);
+    return ::descriptor_table_devinfo_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  typedef Battery_Status Status;
+  static constexpr Status IDLE =
+    Battery_Status_IDLE;
+  static constexpr Status CHARGING =
+    Battery_Status_CHARGING;
+  static constexpr Status CHARGE_COMPLETED =
+    Battery_Status_CHARGE_COMPLETED;
+  static inline bool Status_IsValid(int value) {
+    return Battery_Status_IsValid(value);
+  }
+  static constexpr Status Status_MIN =
+    Battery_Status_Status_MIN;
+  static constexpr Status Status_MAX =
+    Battery_Status_Status_MAX;
+  static constexpr int Status_ARRAYSIZE =
+    Battery_Status_Status_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  Status_descriptor() {
+    return Battery_Status_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& Status_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, Status>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function Status_Name.");
+    return Battery_Status_Name(enum_t_value);
+  }
+  static inline bool Status_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      Status* value) {
+    return Battery_Status_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kLevelFieldNumber = 1,
+    kStatusFieldNumber = 2,
+  };
+  // required uint32 level = 1;
+  bool has_level() const;
+  private:
+  bool _internal_has_level() const;
+  public:
+  void clear_level();
+  ::PROTOBUF_NAMESPACE_ID::uint32 level() const;
+  void set_level(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_level() const;
+  void _internal_set_level(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // optional uint32 status = 2;
+  bool has_status() const;
+  private:
+  bool _internal_has_status() const;
+  public:
+  void clear_status();
+  ::PROTOBUF_NAMESPACE_ID::uint32 status() const;
+  void set_status(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_status() const;
+  void _internal_set_status(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:info.Battery)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 level_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 status_;
+  friend struct ::TableStruct_devinfo_2eproto;
+};
 // ===================================================================
 
 
@@ -684,9 +907,71 @@ inline void Device::set_allocated_mac(std::string* mac) {
   // @@protoc_insertion_point(field_set_allocated:info.Device.mac)
 }
 
+// -------------------------------------------------------------------
+
+// Battery
+
+// required uint32 level = 1;
+inline bool Battery::_internal_has_level() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool Battery::has_level() const {
+  return _internal_has_level();
+}
+inline void Battery::clear_level() {
+  level_ = 0u;
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Battery::_internal_level() const {
+  return level_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Battery::level() const {
+  // @@protoc_insertion_point(field_get:info.Battery.level)
+  return _internal_level();
+}
+inline void Battery::_internal_set_level(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _has_bits_[0] |= 0x00000001u;
+  level_ = value;
+}
+inline void Battery::set_level(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_level(value);
+  // @@protoc_insertion_point(field_set:info.Battery.level)
+}
+
+// optional uint32 status = 2;
+inline bool Battery::_internal_has_status() const {
+  bool value = (_has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool Battery::has_status() const {
+  return _internal_has_status();
+}
+inline void Battery::clear_status() {
+  status_ = 0u;
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Battery::_internal_status() const {
+  return status_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Battery::status() const {
+  // @@protoc_insertion_point(field_get:info.Battery.status)
+  return _internal_status();
+}
+inline void Battery::_internal_set_status(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _has_bits_[0] |= 0x00000002u;
+  status_ = value;
+}
+inline void Battery::set_status(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_status(value);
+  // @@protoc_insertion_point(field_set:info.Battery.status)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -703,6 +988,11 @@ template <> struct is_proto_enum< ::info::Device_Model> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::info::Device_Model>() {
   return ::info::Device_Model_descriptor();
+}
+template <> struct is_proto_enum< ::info::Battery_Status> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::info::Battery_Status>() {
+  return ::info::Battery_Status_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

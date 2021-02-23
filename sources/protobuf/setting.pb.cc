@@ -79,18 +79,8 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_setting_2eproto::offsets[] PRO
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::setting::Time, year_),
-  PROTOBUF_FIELD_OFFSET(::setting::Time, mon_),
-  PROTOBUF_FIELD_OFFSET(::setting::Time, day_),
-  PROTOBUF_FIELD_OFFSET(::setting::Time, hour_),
-  PROTOBUF_FIELD_OFFSET(::setting::Time, min_),
-  PROTOBUF_FIELD_OFFSET(::setting::Time, sec_),
+  PROTOBUF_FIELD_OFFSET(::setting::Time, unix_timestamp_),
   0,
-  1,
-  2,
-  3,
-  4,
-  5,
   PROTOBUF_FIELD_OFFSET(::setting::Alarm_Body, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::setting::Alarm_Body, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -111,12 +101,12 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_setting_2eproto::offsets[] PRO
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::setting::Alarm, array_),
+  PROTOBUF_FIELD_OFFSET(::setting::Alarm, entities_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 11, sizeof(::setting::Time)},
-  { 17, 27, sizeof(::setting::Alarm_Body)},
-  { 32, -1, sizeof(::setting::Alarm)},
+  { 0, 6, sizeof(::setting::Time)},
+  { 7, 17, sizeof(::setting::Alarm_Body)},
+  { 22, -1, sizeof(::setting::Alarm)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -126,13 +116,11 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_setting_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rsetting.proto\022\007setting\"V\n\004Time\022\014\n\004year"
-  "\030\001 \002(\r\022\013\n\003mon\030\002 \002(\r\022\013\n\003day\030\003 \002(\r\022\014\n\004hour"
-  "\030\004 \002(\r\022\013\n\003min\030\005 \002(\r\022\013\n\003sec\030\006 \002(\r\"}\n\005Alar"
-  "m\022\"\n\005array\030\001 \003(\0132\023.setting.Alarm.Body\032P\n"
-  "\004Body\022\014\n\004hour\030\001 \002(\r\022\013\n\003min\030\002 \002(\r\022\013\n\003sec\030"
-  "\003 \002(\r\022\020\n\010weekbits\030\004 \002(\r\022\016\n\006repeat\030\005 \002(\010B"
-  "\002H\001"
+  "\n\rsetting.proto\022\007setting\"\036\n\004Time\022\026\n\016unix"
+  "_timestamp\030\001 \002(\007\"\200\001\n\005Alarm\022%\n\010entities\030\001"
+  " \003(\0132\023.setting.Alarm.Body\032P\n\004Body\022\014\n\004hou"
+  "r\030\001 \002(\r\022\013\n\003min\030\002 \002(\r\022\013\n\003sec\030\003 \002(\r\022\020\n\010wee"
+  "kbits\030\004 \002(\r\022\016\n\006repeat\030\005 \002(\010B\002H\001"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_setting_2eproto_deps[1] = {
 };
@@ -143,7 +131,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_set
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_setting_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_setting_2eproto = {
-  false, false, descriptor_table_protodef_setting_2eproto, "setting.proto", 243,
+  false, false, descriptor_table_protodef_setting_2eproto, "setting.proto", 191,
   &descriptor_table_setting_2eproto_once, descriptor_table_setting_2eproto_sccs, descriptor_table_setting_2eproto_deps, 3, 0,
   schemas, file_default_instances, TableStruct_setting_2eproto::offsets,
   file_level_metadata_setting_2eproto, 3, file_level_enum_descriptors_setting_2eproto, file_level_service_descriptors_setting_2eproto,
@@ -158,26 +146,11 @@ namespace setting {
 class Time::_Internal {
  public:
   using HasBits = decltype(std::declval<Time>()._has_bits_);
-  static void set_has_year(HasBits* has_bits) {
+  static void set_has_unix_timestamp(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
-  static void set_has_mon(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-  static void set_has_day(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-  static void set_has_hour(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
-  }
-  static void set_has_min(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
-  }
-  static void set_has_sec(HasBits* has_bits) {
-    (*has_bits)[0] |= 32u;
-  }
   static bool MissingRequiredFields(const HasBits& has_bits) {
-    return ((has_bits[0] & 0x0000003f) ^ 0x0000003f) != 0;
+    return ((has_bits[0] & 0x00000001) ^ 0x00000001) != 0;
   }
 };
 
@@ -191,17 +164,12 @@ Time::Time(const Time& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       _has_bits_(from._has_bits_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&year_, &from.year_,
-    static_cast<size_t>(reinterpret_cast<char*>(&sec_) -
-    reinterpret_cast<char*>(&year_)) + sizeof(sec_));
+  unix_timestamp_ = from.unix_timestamp_;
   // @@protoc_insertion_point(copy_constructor:setting.Time)
 }
 
 void Time::SharedCtor() {
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&year_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&sec_) -
-      reinterpret_cast<char*>(&year_)) + sizeof(sec_));
+  unix_timestamp_ = 0u;
 }
 
 Time::~Time() {
@@ -235,12 +203,7 @@ void Time::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  cached_has_bits = _has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
-    ::memset(&year_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&sec_) -
-        reinterpret_cast<char*>(&year_)) + sizeof(sec_));
-  }
+  unix_timestamp_ = 0u;
   _has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -253,52 +216,12 @@ const char* Time::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::inter
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
     switch (tag >> 3) {
-      // required uint32 year = 1;
+      // required fixed32 unix_timestamp = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
-          _Internal::set_has_year(&has_bits);
-          year_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // required uint32 mon = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          _Internal::set_has_mon(&has_bits);
-          mon_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // required uint32 day = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          _Internal::set_has_day(&has_bits);
-          day_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // required uint32 hour = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
-          _Internal::set_has_hour(&has_bits);
-          hour_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // required uint32 min = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
-          _Internal::set_has_min(&has_bits);
-          min_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // required uint32 sec = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
-          _Internal::set_has_sec(&has_bits);
-          sec_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 13)) {
+          _Internal::set_has_unix_timestamp(&has_bits);
+          unix_timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint32>(ptr);
+          ptr += sizeof(::PROTOBUF_NAMESPACE_ID::uint32);
         } else goto handle_unusual;
         continue;
       default: {
@@ -331,40 +254,10 @@ failure:
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  // required uint32 year = 1;
+  // required fixed32 unix_timestamp = 1;
   if (cached_has_bits & 0x00000001u) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_year(), target);
-  }
-
-  // required uint32 mon = 2;
-  if (cached_has_bits & 0x00000002u) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_mon(), target);
-  }
-
-  // required uint32 day = 3;
-  if (cached_has_bits & 0x00000004u) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_day(), target);
-  }
-
-  // required uint32 hour = 4;
-  if (cached_has_bits & 0x00000008u) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_hour(), target);
-  }
-
-  // required uint32 min = 5;
-  if (cached_has_bits & 0x00000010u) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->_internal_min(), target);
-  }
-
-  // required uint32 sec = 6;
-  if (cached_has_bits & 0x00000020u) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->_internal_sec(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFixed32ToArray(1, this->_internal_unix_timestamp(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -375,91 +268,13 @@ failure:
   return target;
 }
 
-size_t Time::RequiredFieldsByteSizeFallback() const {
-// @@protoc_insertion_point(required_fields_byte_size_fallback_start:setting.Time)
-  size_t total_size = 0;
-
-  if (_internal_has_year()) {
-    // required uint32 year = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_year());
-  }
-
-  if (_internal_has_mon()) {
-    // required uint32 mon = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_mon());
-  }
-
-  if (_internal_has_day()) {
-    // required uint32 day = 3;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_day());
-  }
-
-  if (_internal_has_hour()) {
-    // required uint32 hour = 4;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_hour());
-  }
-
-  if (_internal_has_min()) {
-    // required uint32 min = 5;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_min());
-  }
-
-  if (_internal_has_sec()) {
-    // required uint32 sec = 6;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_sec());
-  }
-
-  return total_size;
-}
 size_t Time::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:setting.Time)
   size_t total_size = 0;
 
-  if (((_has_bits_[0] & 0x0000003f) ^ 0x0000003f) == 0) {  // All required fields are present.
-    // required uint32 year = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_year());
-
-    // required uint32 mon = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_mon());
-
-    // required uint32 day = 3;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_day());
-
-    // required uint32 hour = 4;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_hour());
-
-    // required uint32 min = 5;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_min());
-
-    // required uint32 sec = 6;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_sec());
-
-  } else {
-    total_size += RequiredFieldsByteSizeFallback();
+  // required fixed32 unix_timestamp = 1;
+  if (_internal_has_unix_timestamp()) {
+    total_size += 1 + 4;
   }
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
@@ -496,27 +311,8 @@ void Time::MergeFrom(const Time& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  cached_has_bits = from._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
-    if (cached_has_bits & 0x00000001u) {
-      year_ = from.year_;
-    }
-    if (cached_has_bits & 0x00000002u) {
-      mon_ = from.mon_;
-    }
-    if (cached_has_bits & 0x00000004u) {
-      day_ = from.day_;
-    }
-    if (cached_has_bits & 0x00000008u) {
-      hour_ = from.hour_;
-    }
-    if (cached_has_bits & 0x00000010u) {
-      min_ = from.min_;
-    }
-    if (cached_has_bits & 0x00000020u) {
-      sec_ = from.sec_;
-    }
-    _has_bits_[0] |= cached_has_bits;
+  if (from._internal_has_unix_timestamp()) {
+    _internal_set_unix_timestamp(from._internal_unix_timestamp());
   }
 }
 
@@ -543,12 +339,7 @@ void Time::InternalSwap(Time* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Time, sec_)
-      + sizeof(Time::sec_)
-      - PROTOBUF_FIELD_OFFSET(Time, year_)>(
-          reinterpret_cast<char*>(&year_),
-          reinterpret_cast<char*>(&other->year_));
+  swap(unix_timestamp_, other->unix_timestamp_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Time::GetMetadata() const {
@@ -931,14 +722,14 @@ class Alarm::_Internal {
 
 Alarm::Alarm(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  array_(arena) {
+  entities_(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
   // @@protoc_insertion_point(arena_constructor:setting.Alarm)
 }
 Alarm::Alarm(const Alarm& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      array_(from.array_) {
+      entities_(from.entities_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:setting.Alarm)
 }
@@ -978,7 +769,7 @@ void Alarm::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  array_.Clear();
+  entities_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -989,13 +780,13 @@ const char* Alarm::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::inte
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
     switch (tag >> 3) {
-      // repeated .setting.Alarm.Body array = 1;
+      // repeated .setting.Alarm.Body entities = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_array(), ptr);
+            ptr = ctx->ParseMessage(_internal_add_entities(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
@@ -1029,12 +820,12 @@ failure:
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .setting.Alarm.Body array = 1;
+  // repeated .setting.Alarm.Body entities = 1;
   for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->_internal_array_size()); i < n; i++) {
+      n = static_cast<unsigned int>(this->_internal_entities_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, this->_internal_array(i), target, stream);
+      InternalWriteMessage(1, this->_internal_entities(i), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1053,9 +844,9 @@ size_t Alarm::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .setting.Alarm.Body array = 1;
-  total_size += 1UL * this->_internal_array_size();
-  for (const auto& msg : this->array_) {
+  // repeated .setting.Alarm.Body entities = 1;
+  total_size += 1UL * this->_internal_entities_size();
+  for (const auto& msg : this->entities_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -1091,7 +882,7 @@ void Alarm::MergeFrom(const Alarm& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  array_.MergeFrom(from.array_);
+  entities_.MergeFrom(from.entities_);
 }
 
 void Alarm::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -1109,14 +900,14 @@ void Alarm::CopyFrom(const Alarm& from) {
 }
 
 bool Alarm::IsInitialized() const {
-  if (!::PROTOBUF_NAMESPACE_ID::internal::AllAreInitialized(array_)) return false;
+  if (!::PROTOBUF_NAMESPACE_ID::internal::AllAreInitialized(entities_)) return false;
   return true;
 }
 
 void Alarm::InternalSwap(Alarm* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  array_.InternalSwap(&other->array_);
+  entities_.InternalSwap(&other->entities_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Alarm::GetMetadata() const {

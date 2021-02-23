@@ -25,4 +25,14 @@ message Device {
     optional bytes mac = 8; //MAC address
 }
 
+message Battery {
+    required uint32 level = 1; //Power level [0, 100]
+    enum Status {
+        IDLE             = 0;
+        CHARGING         = 1;
+        CHARGE_COMPLETED = 2;
+    }
+    optional uint32 status = 2; //Charge status
+}
+
 

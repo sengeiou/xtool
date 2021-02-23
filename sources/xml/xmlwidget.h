@@ -9,7 +9,10 @@ class MinorItem;
 
 class XmlWidgetItem : public QListWidgetItem {
 public:
-    explicit XmlWidgetItem(XmlDataNode *node, QListWidget *view = nullptr);
+    explicit XmlWidgetItem(XmlDataNode *node, QListWidget *view = nullptr)
+        : QListWidgetItem(node->name(), view),
+          data_(node) {
+    }
     ~XmlWidgetItem() {
         data_ = nullptr;
     }

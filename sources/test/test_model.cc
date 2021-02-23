@@ -36,12 +36,13 @@ TestModel::~TestModel()
 
 bool TestModel::StartCalling(const QString &name, const QString &phone)
 {
+    proto::time::UnixTimestamp *timestamp = new proto::time::UnixTimestamp();
     QDateTime time = QDateTime::currentDateTime();
     remind::Call calling;
     char buffer[256];
 
-    uint timestamp = time.toTime_t();
-    calling.set_timestamp(timestamp);
+    timestamp->set_time(time.toTime_t());
+    calling.set_allocated_timestamp(timestamp);
     calling.set_phone(phone.toStdString());
     calling.set_people(name.toStdString());
     calling.SerializeToArray(buffer, calling.ByteSizeLong());
@@ -52,12 +53,13 @@ bool TestModel::StartCalling(const QString &name, const QString &phone)
 bool TestModel::SendTextMessage(const QString &name, const QString &phone, int type,
                                 const QString &text)
 {
+    ::proto::time::UnixTimestamp *timestamp = new proto::time::UnixTimestamp();
     QDateTime time = QDateTime::currentDateTime();
     remind::Message message;
     char buffer[256];
 
-    uint timestamp = time.toTime_t();
-    message.set_timestamp(timestamp);
+    timestamp->set_time(time.toTime_t());
+    message.set_allocated_timestamp(timestamp);
     message.set_phone(phone.toStdString());
     message.set_people(name.toStdString());
     message.set_type((remind::Message::Type)type);

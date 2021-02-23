@@ -36,7 +36,7 @@ SOURCES += sources/com/serial/serialport_controller.cc
 SOURCES += sources/com/serial/serial.cc
 SOURCES += sources/xml/xmlparse.cc
 SOURCES += sources/xml/xmlnode.cc
-SOURCES += sources/xml/xmlwidget.cc
+# SOURCES += sources/xml/xmlwidget.cc
 SOURCES += sources/transfer/file_transfer.cc
 SOURCES += sources/transfer/transfer_controller.cc
 SOURCES += sources/transfer/transfer_view.cc
@@ -47,7 +47,7 @@ SOURCES += sources/xtool_view.cc
 SOURCES += sources/protobuf/ota.pb.cc
 SOURCES += sources/protobuf/remind.pb.cc
 SOURCES += sources/protobuf/devinfo.pb.cc
-
+SOURCES += sources/protobuf/time.pb.cc
 
 # Form
 FORMS =

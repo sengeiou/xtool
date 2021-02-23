@@ -1,17 +1,20 @@
 syntax = "proto2";
 package remind;
 
+import "time.proto";
+
 //SPEED/CODE_SIZE/LITE_RUNTIME
 option optimize_for=SPEED;
 
 message Call {
-    required fixed32 timestamp = 1; //Time Stamp
+    required proto.time.UnixTimestamp timestamp = 1; //Time stamp
     required string phone = 2; //Phone number
     optional string people = 3; //Contact name
+    
 }
 
 message Message {
-    required fixed32 timestamp = 1; //Time Stamp
+    required proto.time.UnixTimestamp timestamp = 1; //Time stamp
     enum Type {
         TEXT      = 0; /* Text message */
         FACEBOOK  = 1; /* Facebook message */

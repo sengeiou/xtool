@@ -7,7 +7,6 @@
 			<Items>
 				<Item>
 					<Minor>0x01</Minor>
-					<Length>0</Length>
 					<Data></Data>
 					<Expect>0</Expect>
 				</Item>
@@ -19,7 +18,6 @@
 			<Items>
 				<Item>
 					<Minor>0x10</Minor>
-					<Length>0</Length>
 					<Data></Data>
 					<Expect>0</Expect>
 				</Item>
@@ -31,7 +29,6 @@
 			<Items>
 				<Item>
 					<Minor>0x13</Minor>
-					<Length>0</Length>
 					<Data></Data>
 					<Expect>0</Expect>
 				</Item>
@@ -43,7 +40,6 @@
 			<Items>
 				<Item>
 					<Minor>0x13</Minor>
-					<Length>0</Length>
 					<Data></Data>
 					<Expect>0</Expect>
 				</Item>
@@ -51,3 +47,4 @@
 		</Content>
 	</Groups>
 </Project>
+

@@ -14,6 +14,7 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
+extern PROTOBUF_INTERNAL_EXPORT_time_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_UnixTimestamp_time_2eproto;
 namespace remind {
 class CallDefaultTypeInternal {
  public:
@@ -51,8 +52,9 @@ static void InitDefaultsscc_info_Call_remind_2eproto() {
   }
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Call_remind_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Call_remind_2eproto}, {}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_Call_remind_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_Call_remind_2eproto}, {
+      &scc_info_UnixTimestamp_time_2eproto.base,}};
 
 static void InitDefaultsscc_info_Message_remind_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -64,8 +66,9 @@ static void InitDefaultsscc_info_Message_remind_2eproto() {
   }
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Message_remind_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Message_remind_2eproto}, {}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_Message_remind_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_Message_remind_2eproto}, {
+      &scc_info_UnixTimestamp_time_2eproto.base,}};
 
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_remind_2eproto[3];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_remind_2eproto[1];
@@ -119,16 +122,18 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_remind_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014remind.proto\022\006remind\"8\n\004Call\022\021\n\ttimest"
-  "amp\030\001 \002(\007\022\r\n\005phone\030\002 \002(\t\022\016\n\006people\030\003 \001(\t"
-  "\"\247\001\n\007Message\022\021\n\ttimestamp\030\001 \002(\007\022(\n\004type\030"
-  "\002 \002(\0162\024.remind.Message.Type:\004TEXT\022\r\n\005pho"
-  "ne\030\003 \002(\t\022\014\n\004text\030\004 \002(\t\022\016\n\006people\030\005 \001(\t\"2"
-  "\n\004Type\022\010\n\004TEXT\020\000\022\014\n\010FACEBOOK\020\001\022\n\n\006WECHAT"
-  "\020\002\022\006\n\002QQ\020\003\"\032\n\007Battery\022\017\n\007percent\030\001 \002(\rB\002"
-  "H\001"
+  "\n\014remind.proto\022\006remind\032\ntime.proto\"S\n\004Ca"
+  "ll\022,\n\ttimestamp\030\001 \002(\0132\031.proto.time.UnixT"
+  "imestamp\022\r\n\005phone\030\002 \002(\t\022\016\n\006people\030\003 \001(\t\""
+  "\302\001\n\007Message\022,\n\ttimestamp\030\001 \002(\0132\031.proto.t"
+  "ime.UnixTimestamp\022(\n\004type\030\002 \002(\0162\024.remind"
+  ".Message.Type:\004TEXT\022\r\n\005phone\030\003 \002(\t\022\014\n\004te"
+  "xt\030\004 \002(\t\022\016\n\006people\030\005 \001(\t\"2\n\004Type\022\010\n\004TEXT"
+  "\020\000\022\014\n\010FACEBOOK\020\001\022\n\n\006WECHAT\020\002\022\006\n\002QQ\020\003\"\032\n\007"
+  "Battery\022\017\n\007percent\030\001 \002(\rB\002H\001"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_remind_2eproto_deps[1] = {
+  &::descriptor_table_time_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_remind_2eproto_sccs[3] = {
   &scc_info_Battery_remind_2eproto.base,
@@ -137,8 +142,8 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_rem
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_remind_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_remind_2eproto = {
-  false, false, descriptor_table_protodef_remind_2eproto, "remind.proto", 282,
-  &descriptor_table_remind_2eproto_once, descriptor_table_remind_2eproto_sccs, descriptor_table_remind_2eproto_deps, 3, 0,
+  false, false, descriptor_table_protodef_remind_2eproto, "remind.proto", 348,
+  &descriptor_table_remind_2eproto_once, descriptor_table_remind_2eproto_sccs, descriptor_table_remind_2eproto_deps, 3, 1,
   schemas, file_default_instances, TableStruct_remind_2eproto::offsets,
   file_level_metadata_remind_2eproto, 3, file_level_enum_descriptors_remind_2eproto, file_level_service_descriptors_remind_2eproto,
 };
@@ -177,6 +182,7 @@ constexpr int Message::Type_ARRAYSIZE;
 class Call::_Internal {
  public:
   using HasBits = decltype(std::declval<Call>()._has_bits_);
+  static const ::proto::time::UnixTimestamp& timestamp(const Call* msg);
   static void set_has_timestamp(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
   }
@@ -191,6 +197,14 @@ class Call::_Internal {
   }
 };
 
+const ::proto::time::UnixTimestamp&
+Call::_Internal::timestamp(const Call* msg) {
+  return *msg->timestamp_;
+}
+void Call::clear_timestamp() {
+  if (timestamp_ != nullptr) timestamp_->Clear();
+  _has_bits_[0] &= ~0x00000004u;
+}
 Call::Call(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
   SharedCtor();
@@ -211,7 +225,11 @@ Call::Call(const Call& from)
     people_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_people(), 
       GetArena());
   }
-  timestamp_ = from.timestamp_;
+  if (from._internal_has_timestamp()) {
+    timestamp_ = new ::proto::time::UnixTimestamp(*from.timestamp_);
+  } else {
+    timestamp_ = nullptr;
+  }
   // @@protoc_insertion_point(copy_constructor:remind.Call)
 }
 
@@ -219,7 +237,7 @@ void Call::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Call_remind_2eproto.base);
   phone_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   people_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  timestamp_ = 0u;
+  timestamp_ = nullptr;
 }
 
 Call::~Call() {
@@ -232,6 +250,7 @@ void Call::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
   phone_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   people_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete timestamp_;
 }
 
 void Call::ArenaDtor(void* object) {
@@ -256,15 +275,18 @@ void Call::Clear() {
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
+  if (cached_has_bits & 0x00000007u) {
     if (cached_has_bits & 0x00000001u) {
       phone_.ClearNonDefaultToEmpty();
     }
     if (cached_has_bits & 0x00000002u) {
       people_.ClearNonDefaultToEmpty();
     }
+    if (cached_has_bits & 0x00000004u) {
+      GOOGLE_DCHECK(timestamp_ != nullptr);
+      timestamp_->Clear();
+    }
   }
-  timestamp_ = 0u;
   _has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -277,12 +299,11 @@ const char* Call::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::inter
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
     switch (tag >> 3) {
-      // required fixed32 timestamp = 1;
+      // required .proto.time.UnixTimestamp timestamp = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 13)) {
-          _Internal::set_has_timestamp(&has_bits);
-          timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint32>(ptr);
-          ptr += sizeof(::PROTOBUF_NAMESPACE_ID::uint32);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_timestamp(), ptr);
+          CHK_(ptr);
         } else goto handle_unusual;
         continue;
       // required string phone = 2;
@@ -337,10 +358,12 @@ failure:
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  // required fixed32 timestamp = 1;
+  // required .proto.time.UnixTimestamp timestamp = 1;
   if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFixed32ToArray(1, this->_internal_timestamp(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::timestamp(this), target, stream);
   }
 
   // required string phone = 2;
@@ -383,8 +406,10 @@ size_t Call::RequiredFieldsByteSizeFallback() const {
   }
 
   if (_internal_has_timestamp()) {
-    // required fixed32 timestamp = 1;
-    total_size += 1 + 4;
+    // required .proto.time.UnixTimestamp timestamp = 1;
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *timestamp_);
   }
 
   return total_size;
@@ -399,8 +424,10 @@ size_t Call::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_phone());
 
-    // required fixed32 timestamp = 1;
-    total_size += 1 + 4;
+    // required .proto.time.UnixTimestamp timestamp = 1;
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *timestamp_);
 
   } else {
     total_size += RequiredFieldsByteSizeFallback();
@@ -457,9 +484,8 @@ void Call::MergeFrom(const Call& from) {
       _internal_set_people(from._internal_people());
     }
     if (cached_has_bits & 0x00000004u) {
-      timestamp_ = from.timestamp_;
+      _internal_mutable_timestamp()->::proto::time::UnixTimestamp::MergeFrom(from._internal_timestamp());
     }
-    _has_bits_[0] |= cached_has_bits;
   }
 }
 
@@ -479,6 +505,9 @@ void Call::CopyFrom(const Call& from) {
 
 bool Call::IsInitialized() const {
   if (_Internal::MissingRequiredFields(_has_bits_)) return false;
+  if (_internal_has_timestamp()) {
+    if (!timestamp_->IsInitialized()) return false;
+  }
   return true;
 }
 
@@ -501,6 +530,7 @@ void Call::InternalSwap(Call* other) {
 class Message::_Internal {
  public:
   using HasBits = decltype(std::declval<Message>()._has_bits_);
+  static const ::proto::time::UnixTimestamp& timestamp(const Message* msg);
   static void set_has_timestamp(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
@@ -521,6 +551,14 @@ class Message::_Internal {
   }
 };
 
+const ::proto::time::UnixTimestamp&
+Message::_Internal::timestamp(const Message* msg) {
+  return *msg->timestamp_;
+}
+void Message::clear_timestamp() {
+  if (timestamp_ != nullptr) timestamp_->Clear();
+  _has_bits_[0] &= ~0x00000008u;
+}
 Message::Message(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
   SharedCtor();
@@ -546,9 +584,12 @@ Message::Message(const Message& from)
     people_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_people(), 
       GetArena());
   }
-  ::memcpy(&timestamp_, &from.timestamp_,
-    static_cast<size_t>(reinterpret_cast<char*>(&type_) -
-    reinterpret_cast<char*>(&timestamp_)) + sizeof(type_));
+  if (from._internal_has_timestamp()) {
+    timestamp_ = new ::proto::time::UnixTimestamp(*from.timestamp_);
+  } else {
+    timestamp_ = nullptr;
+  }
+  type_ = from.type_;
   // @@protoc_insertion_point(copy_constructor:remind.Message)
 }
 
@@ -574,6 +615,7 @@ void Message::SharedDtor() {
   phone_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   text_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   people_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete timestamp_;
 }
 
 void Message::ArenaDtor(void* object) {
@@ -598,7 +640,7 @@ void Message::Clear() {
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x0000000fu) {
     if (cached_has_bits & 0x00000001u) {
       phone_.ClearNonDefaultToEmpty();
     }
@@ -608,12 +650,12 @@ void Message::Clear() {
     if (cached_has_bits & 0x00000004u) {
       people_.ClearNonDefaultToEmpty();
     }
+    if (cached_has_bits & 0x00000008u) {
+      GOOGLE_DCHECK(timestamp_ != nullptr);
+      timestamp_->Clear();
+    }
   }
-  if (cached_has_bits & 0x00000018u) {
-    ::memset(&timestamp_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&type_) -
-        reinterpret_cast<char*>(&timestamp_)) + sizeof(type_));
-  }
+  type_ = 0;
   _has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -626,12 +668,11 @@ const char* Message::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
     switch (tag >> 3) {
-      // required fixed32 timestamp = 1;
+      // required .proto.time.UnixTimestamp timestamp = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 13)) {
-          _Internal::set_has_timestamp(&has_bits);
-          timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint32>(ptr);
-          ptr += sizeof(::PROTOBUF_NAMESPACE_ID::uint32);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_timestamp(), ptr);
+          CHK_(ptr);
         } else goto handle_unusual;
         continue;
       // required .remind.Message.Type type = 2 [default = TEXT];
@@ -709,10 +750,12 @@ failure:
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  // required fixed32 timestamp = 1;
+  // required .proto.time.UnixTimestamp timestamp = 1;
   if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFixed32ToArray(1, this->_internal_timestamp(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::timestamp(this), target, stream);
   }
 
   // required .remind.Message.Type type = 2 [default = TEXT];
@@ -779,8 +822,10 @@ size_t Message::RequiredFieldsByteSizeFallback() const {
   }
 
   if (_internal_has_timestamp()) {
-    // required fixed32 timestamp = 1;
-    total_size += 1 + 4;
+    // required .proto.time.UnixTimestamp timestamp = 1;
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *timestamp_);
   }
 
   if (_internal_has_type()) {
@@ -806,8 +851,10 @@ size_t Message::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_text());
 
-    // required fixed32 timestamp = 1;
-    total_size += 1 + 4;
+    // required .proto.time.UnixTimestamp timestamp = 1;
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *timestamp_);
 
     // required .remind.Message.Type type = 2 [default = TEXT];
     total_size += 1 +
@@ -871,7 +918,7 @@ void Message::MergeFrom(const Message& from) {
       _internal_set_people(from._internal_people());
     }
     if (cached_has_bits & 0x00000008u) {
-      timestamp_ = from.timestamp_;
+      _internal_mutable_timestamp()->::proto::time::UnixTimestamp::MergeFrom(from._internal_timestamp());
     }
     if (cached_has_bits & 0x00000010u) {
       type_ = from.type_;
@@ -896,6 +943,9 @@ void Message::CopyFrom(const Message& from) {
 
 bool Message::IsInitialized() const {
   if (_Internal::MissingRequiredFields(_has_bits_)) return false;
+  if (_internal_has_timestamp()) {
+    if (!timestamp_->IsInitialized()) return false;
+  }
   return true;
 }
 

@@ -192,109 +192,31 @@ class Time PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kYearFieldNumber = 1,
-    kMonFieldNumber = 2,
-    kDayFieldNumber = 3,
-    kHourFieldNumber = 4,
-    kMinFieldNumber = 5,
-    kSecFieldNumber = 6,
+    kUnixTimestampFieldNumber = 1,
   };
-  // required uint32 year = 1;
-  bool has_year() const;
+  // required fixed32 unix_timestamp = 1;
+  bool has_unix_timestamp() const;
   private:
-  bool _internal_has_year() const;
+  bool _internal_has_unix_timestamp() const;
   public:
-  void clear_year();
-  ::PROTOBUF_NAMESPACE_ID::uint32 year() const;
-  void set_year(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  void clear_unix_timestamp();
+  ::PROTOBUF_NAMESPACE_ID::uint32 unix_timestamp() const;
+  void set_unix_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_year() const;
-  void _internal_set_year(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // required uint32 mon = 2;
-  bool has_mon() const;
-  private:
-  bool _internal_has_mon() const;
-  public:
-  void clear_mon();
-  ::PROTOBUF_NAMESPACE_ID::uint32 mon() const;
-  void set_mon(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_mon() const;
-  void _internal_set_mon(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // required uint32 day = 3;
-  bool has_day() const;
-  private:
-  bool _internal_has_day() const;
-  public:
-  void clear_day();
-  ::PROTOBUF_NAMESPACE_ID::uint32 day() const;
-  void set_day(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_day() const;
-  void _internal_set_day(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // required uint32 hour = 4;
-  bool has_hour() const;
-  private:
-  bool _internal_has_hour() const;
-  public:
-  void clear_hour();
-  ::PROTOBUF_NAMESPACE_ID::uint32 hour() const;
-  void set_hour(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_hour() const;
-  void _internal_set_hour(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // required uint32 min = 5;
-  bool has_min() const;
-  private:
-  bool _internal_has_min() const;
-  public:
-  void clear_min();
-  ::PROTOBUF_NAMESPACE_ID::uint32 min() const;
-  void set_min(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_min() const;
-  void _internal_set_min(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // required uint32 sec = 6;
-  bool has_sec() const;
-  private:
-  bool _internal_has_sec() const;
-  public:
-  void clear_sec();
-  ::PROTOBUF_NAMESPACE_ID::uint32 sec() const;
-  void set_sec(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_sec() const;
-  void _internal_set_sec(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_unix_timestamp() const;
+  void _internal_set_unix_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:setting.Time)
  private:
   class _Internal;
 
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
-
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 year_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 mon_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 day_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 hour_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 min_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 sec_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 unix_timestamp_;
   friend struct ::TableStruct_setting_2eproto;
 };
 // -------------------------------------------------------------------
@@ -631,25 +553,25 @@ class Alarm PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kArrayFieldNumber = 1,
+    kEntitiesFieldNumber = 1,
   };
-  // repeated .setting.Alarm.Body array = 1;
-  int array_size() const;
+  // repeated .setting.Alarm.Body entities = 1;
+  int entities_size() const;
   private:
-  int _internal_array_size() const;
+  int _internal_entities_size() const;
   public:
-  void clear_array();
-  ::setting::Alarm_Body* mutable_array(int index);
+  void clear_entities();
+  ::setting::Alarm_Body* mutable_entities(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::setting::Alarm_Body >*
-      mutable_array();
+      mutable_entities();
   private:
-  const ::setting::Alarm_Body& _internal_array(int index) const;
-  ::setting::Alarm_Body* _internal_add_array();
+  const ::setting::Alarm_Body& _internal_entities(int index) const;
+  ::setting::Alarm_Body* _internal_add_entities();
   public:
-  const ::setting::Alarm_Body& array(int index) const;
-  ::setting::Alarm_Body* add_array();
+  const ::setting::Alarm_Body& entities(int index) const;
+  ::setting::Alarm_Body* add_entities();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::setting::Alarm_Body >&
-      array() const;
+      entities() const;
 
   // @@protoc_insertion_point(class_scope:setting.Alarm)
  private:
@@ -658,7 +580,7 @@ class Alarm PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::setting::Alarm_Body > array_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::setting::Alarm_Body > entities_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_setting_2eproto;
 };
@@ -673,172 +595,32 @@ class Alarm PROTOBUF_FINAL :
 #endif  // __GNUC__
 // Time
 
-// required uint32 year = 1;
-inline bool Time::_internal_has_year() const {
+// required fixed32 unix_timestamp = 1;
+inline bool Time::_internal_has_unix_timestamp() const {
   bool value = (_has_bits_[0] & 0x00000001u) != 0;
   return value;
 }
-inline bool Time::has_year() const {
-  return _internal_has_year();
+inline bool Time::has_unix_timestamp() const {
+  return _internal_has_unix_timestamp();
 }
-inline void Time::clear_year() {
-  year_ = 0u;
+inline void Time::clear_unix_timestamp() {
+  unix_timestamp_ = 0u;
   _has_bits_[0] &= ~0x00000001u;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::_internal_year() const {
-  return year_;
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::_internal_unix_timestamp() const {
+  return unix_timestamp_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::year() const {
-  // @@protoc_insertion_point(field_get:setting.Time.year)
-  return _internal_year();
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::unix_timestamp() const {
+  // @@protoc_insertion_point(field_get:setting.Time.unix_timestamp)
+  return _internal_unix_timestamp();
 }
-inline void Time::_internal_set_year(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void Time::_internal_set_unix_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   _has_bits_[0] |= 0x00000001u;
-  year_ = value;
+  unix_timestamp_ = value;
 }
-inline void Time::set_year(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_year(value);
-  // @@protoc_insertion_point(field_set:setting.Time.year)
-}
-
-// required uint32 mon = 2;
-inline bool Time::_internal_has_mon() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool Time::has_mon() const {
-  return _internal_has_mon();
-}
-inline void Time::clear_mon() {
-  mon_ = 0u;
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::_internal_mon() const {
-  return mon_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::mon() const {
-  // @@protoc_insertion_point(field_get:setting.Time.mon)
-  return _internal_mon();
-}
-inline void Time::_internal_set_mon(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _has_bits_[0] |= 0x00000002u;
-  mon_ = value;
-}
-inline void Time::set_mon(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_mon(value);
-  // @@protoc_insertion_point(field_set:setting.Time.mon)
-}
-
-// required uint32 day = 3;
-inline bool Time::_internal_has_day() const {
-  bool value = (_has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool Time::has_day() const {
-  return _internal_has_day();
-}
-inline void Time::clear_day() {
-  day_ = 0u;
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::_internal_day() const {
-  return day_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::day() const {
-  // @@protoc_insertion_point(field_get:setting.Time.day)
-  return _internal_day();
-}
-inline void Time::_internal_set_day(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _has_bits_[0] |= 0x00000004u;
-  day_ = value;
-}
-inline void Time::set_day(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_day(value);
-  // @@protoc_insertion_point(field_set:setting.Time.day)
-}
-
-// required uint32 hour = 4;
-inline bool Time::_internal_has_hour() const {
-  bool value = (_has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool Time::has_hour() const {
-  return _internal_has_hour();
-}
-inline void Time::clear_hour() {
-  hour_ = 0u;
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::_internal_hour() const {
-  return hour_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::hour() const {
-  // @@protoc_insertion_point(field_get:setting.Time.hour)
-  return _internal_hour();
-}
-inline void Time::_internal_set_hour(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _has_bits_[0] |= 0x00000008u;
-  hour_ = value;
-}
-inline void Time::set_hour(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_hour(value);
-  // @@protoc_insertion_point(field_set:setting.Time.hour)
-}
-
-// required uint32 min = 5;
-inline bool Time::_internal_has_min() const {
-  bool value = (_has_bits_[0] & 0x00000010u) != 0;
-  return value;
-}
-inline bool Time::has_min() const {
-  return _internal_has_min();
-}
-inline void Time::clear_min() {
-  min_ = 0u;
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::_internal_min() const {
-  return min_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::min() const {
-  // @@protoc_insertion_point(field_get:setting.Time.min)
-  return _internal_min();
-}
-inline void Time::_internal_set_min(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _has_bits_[0] |= 0x00000010u;
-  min_ = value;
-}
-inline void Time::set_min(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_min(value);
-  // @@protoc_insertion_point(field_set:setting.Time.min)
-}
-
-// required uint32 sec = 6;
-inline bool Time::_internal_has_sec() const {
-  bool value = (_has_bits_[0] & 0x00000020u) != 0;
-  return value;
-}
-inline bool Time::has_sec() const {
-  return _internal_has_sec();
-}
-inline void Time::clear_sec() {
-  sec_ = 0u;
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::_internal_sec() const {
-  return sec_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Time::sec() const {
-  // @@protoc_insertion_point(field_get:setting.Time.sec)
-  return _internal_sec();
-}
-inline void Time::_internal_set_sec(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _has_bits_[0] |= 0x00000020u;
-  sec_ = value;
-}
-inline void Time::set_sec(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_sec(value);
-  // @@protoc_insertion_point(field_set:setting.Time.sec)
+inline void Time::set_unix_timestamp(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_unix_timestamp(value);
+  // @@protoc_insertion_point(field_set:setting.Time.unix_timestamp)
 }
 
 // -------------------------------------------------------------------
@@ -989,43 +771,43 @@ inline void Alarm_Body::set_repeat(bool value) {
 
 // Alarm
 
-// repeated .setting.Alarm.Body array = 1;
-inline int Alarm::_internal_array_size() const {
-  return array_.size();
+// repeated .setting.Alarm.Body entities = 1;
+inline int Alarm::_internal_entities_size() const {
+  return entities_.size();
 }
-inline int Alarm::array_size() const {
-  return _internal_array_size();
+inline int Alarm::entities_size() const {
+  return _internal_entities_size();
 }
-inline void Alarm::clear_array() {
-  array_.Clear();
+inline void Alarm::clear_entities() {
+  entities_.Clear();
 }
-inline ::setting::Alarm_Body* Alarm::mutable_array(int index) {
-  // @@protoc_insertion_point(field_mutable:setting.Alarm.array)
-  return array_.Mutable(index);
+inline ::setting::Alarm_Body* Alarm::mutable_entities(int index) {
+  // @@protoc_insertion_point(field_mutable:setting.Alarm.entities)
+  return entities_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::setting::Alarm_Body >*
-Alarm::mutable_array() {
-  // @@protoc_insertion_point(field_mutable_list:setting.Alarm.array)
-  return &array_;
+Alarm::mutable_entities() {
+  // @@protoc_insertion_point(field_mutable_list:setting.Alarm.entities)
+  return &entities_;
 }
-inline const ::setting::Alarm_Body& Alarm::_internal_array(int index) const {
-  return array_.Get(index);
+inline const ::setting::Alarm_Body& Alarm::_internal_entities(int index) const {
+  return entities_.Get(index);
 }
-inline const ::setting::Alarm_Body& Alarm::array(int index) const {
-  // @@protoc_insertion_point(field_get:setting.Alarm.array)
-  return _internal_array(index);
+inline const ::setting::Alarm_Body& Alarm::entities(int index) const {
+  // @@protoc_insertion_point(field_get:setting.Alarm.entities)
+  return _internal_entities(index);
 }
-inline ::setting::Alarm_Body* Alarm::_internal_add_array() {
-  return array_.Add();
+inline ::setting::Alarm_Body* Alarm::_internal_add_entities() {
+  return entities_.Add();
 }
-inline ::setting::Alarm_Body* Alarm::add_array() {
-  // @@protoc_insertion_point(field_add:setting.Alarm.array)
-  return _internal_add_array();
+inline ::setting::Alarm_Body* Alarm::add_entities() {
+  // @@protoc_insertion_point(field_add:setting.Alarm.entities)
+  return _internal_add_entities();
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::setting::Alarm_Body >&
-Alarm::array() const {
-  // @@protoc_insertion_point(field_list:setting.Alarm.array)
-  return array_;
+Alarm::entities() const {
+  // @@protoc_insertion_point(field_list:setting.Alarm.entities)
+  return entities_;
 }
 
 #ifdef __GNUC__
