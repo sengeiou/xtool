@@ -112,6 +112,10 @@ public:
     void RemoveObserver(ObserverBase *obs) {
         observer_.RemoveObserver(obs);
     }
+    void Notify(int action, void *ptr) {
+        observer_.Notify(action, ptr);
+    }
+
     quint32 size() const {
         return file_size_;
     }

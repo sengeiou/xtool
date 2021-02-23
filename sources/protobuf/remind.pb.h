@@ -48,7 +48,7 @@ struct TableStruct_remind_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[4]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -62,6 +62,9 @@ extern BatteryDefaultTypeInternal _Battery_default_instance_;
 class Call;
 class CallDefaultTypeInternal;
 extern CallDefaultTypeInternal _Call_default_instance_;
+class CallSync;
+class CallSyncDefaultTypeInternal;
+extern CallSyncDefaultTypeInternal _CallSync_default_instance_;
 class Message;
 class MessageDefaultTypeInternal;
 extern MessageDefaultTypeInternal _Message_default_instance_;
@@ -69,19 +72,49 @@ extern MessageDefaultTypeInternal _Message_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::remind::Battery* Arena::CreateMaybeMessage<::remind::Battery>(Arena*);
 template<> ::remind::Call* Arena::CreateMaybeMessage<::remind::Call>(Arena*);
+template<> ::remind::CallSync* Arena::CreateMaybeMessage<::remind::CallSync>(Arena*);
 template<> ::remind::Message* Arena::CreateMaybeMessage<::remind::Message>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace remind {
 
+enum CallSync_State : int {
+  CallSync_State_ANSWER = 1,
+  CallSync_State_REJECT = 2,
+  CallSync_State_SPEAKER = 3
+};
+bool CallSync_State_IsValid(int value);
+constexpr CallSync_State CallSync_State_State_MIN = CallSync_State_ANSWER;
+constexpr CallSync_State CallSync_State_State_MAX = CallSync_State_SPEAKER;
+constexpr int CallSync_State_State_ARRAYSIZE = CallSync_State_State_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CallSync_State_descriptor();
+template<typename T>
+inline const std::string& CallSync_State_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CallSync_State>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CallSync_State_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CallSync_State_descriptor(), enum_t_value);
+}
+inline bool CallSync_State_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CallSync_State* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CallSync_State>(
+    CallSync_State_descriptor(), name, value);
+}
 enum Message_Type : int {
   Message_Type_TEXT = 0,
   Message_Type_FACEBOOK = 1,
   Message_Type_WECHAT = 2,
-  Message_Type_QQ = 3
+  Message_Type_QQ = 3,
+  Message_Type_WHATSAPP = 4,
+  Message_Type_MESSENGER = 5,
+  Message_Type_TWITTER = 6,
+  Message_Type_LINKEDIN = 7,
+  Message_Type_INSTAGRAM = 8
 };
 bool Message_Type_IsValid(int value);
 constexpr Message_Type Message_Type_Type_MIN = Message_Type_TEXT;
-constexpr Message_Type Message_Type_Type_MAX = Message_Type_QQ;
+constexpr Message_Type Message_Type_Type_MAX = Message_Type_INSTAGRAM;
 constexpr int Message_Type_Type_ARRAYSIZE = Message_Type_Type_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Message_Type_descriptor();
@@ -300,6 +333,186 @@ class Call PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
+class CallSync PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:remind.CallSync) */ {
+ public:
+  inline CallSync() : CallSync(nullptr) {}
+  virtual ~CallSync();
+
+  CallSync(const CallSync& from);
+  CallSync(CallSync&& from) noexcept
+    : CallSync() {
+    *this = ::std::move(from);
+  }
+
+  inline CallSync& operator=(const CallSync& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CallSync& operator=(CallSync&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const CallSync& default_instance();
+
+  static inline const CallSync* internal_default_instance() {
+    return reinterpret_cast<const CallSync*>(
+               &_CallSync_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(CallSync& a, CallSync& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CallSync* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CallSync* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline CallSync* New() const final {
+    return CreateMaybeMessage<CallSync>(nullptr);
+  }
+
+  CallSync* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<CallSync>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const CallSync& from);
+  void MergeFrom(const CallSync& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CallSync* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "remind.CallSync";
+  }
+  protected:
+  explicit CallSync(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_remind_2eproto);
+    return ::descriptor_table_remind_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  typedef CallSync_State State;
+  static constexpr State ANSWER =
+    CallSync_State_ANSWER;
+  static constexpr State REJECT =
+    CallSync_State_REJECT;
+  static constexpr State SPEAKER =
+    CallSync_State_SPEAKER;
+  static inline bool State_IsValid(int value) {
+    return CallSync_State_IsValid(value);
+  }
+  static constexpr State State_MIN =
+    CallSync_State_State_MIN;
+  static constexpr State State_MAX =
+    CallSync_State_State_MAX;
+  static constexpr int State_ARRAYSIZE =
+    CallSync_State_State_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  State_descriptor() {
+    return CallSync_State_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& State_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, State>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function State_Name.");
+    return CallSync_State_Name(enum_t_value);
+  }
+  static inline bool State_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      State* value) {
+    return CallSync_State_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kCallStateFieldNumber = 1,
+  };
+  // required .remind.CallSync.State call_state = 1;
+  bool has_call_state() const;
+  private:
+  bool _internal_has_call_state() const;
+  public:
+  void clear_call_state();
+  ::remind::CallSync_State call_state() const;
+  void set_call_state(::remind::CallSync_State value);
+  private:
+  ::remind::CallSync_State _internal_call_state() const;
+  void _internal_set_call_state(::remind::CallSync_State value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:remind.CallSync)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  int call_state_;
+  friend struct ::TableStruct_remind_2eproto;
+};
+// -------------------------------------------------------------------
+
 class Message PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:remind.Message) */ {
  public:
@@ -348,7 +561,7 @@ class Message PROTOBUF_FINAL :
                &_Message_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(Message& a, Message& b) {
     a.Swap(&b);
@@ -425,6 +638,16 @@ class Message PROTOBUF_FINAL :
     Message_Type_WECHAT;
   static constexpr Type QQ =
     Message_Type_QQ;
+  static constexpr Type WHATSAPP =
+    Message_Type_WHATSAPP;
+  static constexpr Type MESSENGER =
+    Message_Type_MESSENGER;
+  static constexpr Type TWITTER =
+    Message_Type_TWITTER;
+  static constexpr Type LINKEDIN =
+    Message_Type_LINKEDIN;
+  static constexpr Type INSTAGRAM =
+    Message_Type_INSTAGRAM;
   static inline bool Type_IsValid(int value) {
     return Message_Type_IsValid(value);
   }
@@ -619,7 +842,7 @@ class Battery PROTOBUF_FINAL :
                &_Battery_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(Battery& a, Battery& b) {
     a.Swap(&b);
@@ -951,6 +1174,39 @@ inline void Call::set_allocated_people(std::string* people) {
   people_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), people,
       GetArena());
   // @@protoc_insertion_point(field_set_allocated:remind.Call.people)
+}
+
+// -------------------------------------------------------------------
+
+// CallSync
+
+// required .remind.CallSync.State call_state = 1;
+inline bool CallSync::_internal_has_call_state() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CallSync::has_call_state() const {
+  return _internal_has_call_state();
+}
+inline void CallSync::clear_call_state() {
+  call_state_ = 1;
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline ::remind::CallSync_State CallSync::_internal_call_state() const {
+  return static_cast< ::remind::CallSync_State >(call_state_);
+}
+inline ::remind::CallSync_State CallSync::call_state() const {
+  // @@protoc_insertion_point(field_get:remind.CallSync.call_state)
+  return _internal_call_state();
+}
+inline void CallSync::_internal_set_call_state(::remind::CallSync_State value) {
+  assert(::remind::CallSync_State_IsValid(value));
+  _has_bits_[0] |= 0x00000001u;
+  call_state_ = value;
+}
+inline void CallSync::set_call_state(::remind::CallSync_State value) {
+  _internal_set_call_state(value);
+  // @@protoc_insertion_point(field_set:remind.CallSync.call_state)
 }
 
 // -------------------------------------------------------------------
@@ -1323,6 +1579,8 @@ inline void Battery::set_percent(::PROTOBUF_NAMESPACE_ID::uint32 value) {
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -1330,6 +1588,11 @@ inline void Battery::set_percent(::PROTOBUF_NAMESPACE_ID::uint32 value) {
 
 PROTOBUF_NAMESPACE_OPEN
 
+template <> struct is_proto_enum< ::remind::CallSync_State> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::remind::CallSync_State>() {
+  return ::remind::CallSync_State_descriptor();
+}
 template <> struct is_proto_enum< ::remind::Message_Type> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::remind::Message_Type>() {

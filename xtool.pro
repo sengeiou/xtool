@@ -48,6 +48,7 @@ SOURCES += sources/protobuf/ota.pb.cc
 SOURCES += sources/protobuf/remind.pb.cc
 SOURCES += sources/protobuf/devinfo.pb.cc
 SOURCES += sources/protobuf/time.pb.cc
+SOURCES += sources/protobuf/call.pb.cc
 
 # Form
 FORMS =

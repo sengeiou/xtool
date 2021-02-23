@@ -10,6 +10,7 @@
 
 #include "protobuf/remind.pb.h"
 #include "protobuf/devinfo.pb.h"
+#include "protobuf/call.pb.h"
 
 TestModel::TestModel(XToolModel *model, QObject *parent)
     : QObject(parent),
@@ -38,7 +39,7 @@ bool TestModel::StartCalling(const QString &name, const QString &phone)
 {
     proto::time::UnixTimestamp *timestamp = new proto::time::UnixTimestamp();
     QDateTime time = QDateTime::currentDateTime();
-    remind::Call calling;
+    call::Notice calling;
     char buffer[256];
 
     timestamp->set_time(time.toTime_t());
@@ -47,7 +48,7 @@ bool TestModel::StartCalling(const QString &name, const QString &phone)
     calling.set_people(name.toStdString());
     calling.SerializeToArray(buffer, calling.ByteSizeLong());
     SetReceiveProcess(nullptr);
-    return SendPacket(STP_REMIND_CLASS, 0x02, buffer, (quint16)calling.ByteSizeLong());
+    return SendPacket(STP_CALL_CLASS, 0x01, buffer, (quint16)calling.ByteSizeLong());
 }
 
 bool TestModel::SendTextMessage(const QString &name, const QString &phone, int type,
@@ -104,24 +105,33 @@ bool TestModel::ReceiveProcess(QByteArray *buf)
     QString str;
     Notify(RECV_PACKET, buf);
     if (stp_->ProcessMessage(*buf)) {
-        quint16 len;
-        const quint8 *packet = stp_->ToL2(*buf, &len);
+        quint16 pkglen, datalen;
+
+        const quint8 *packet = stp_->ToL2(*buf, &pkglen);
         if (packet[0] != major_) {
             str = "Error: major number is not matched!";
             goto _failed;
         }
-        if (packet[1] != minor_) {
+        if (pkglen <= 4) {
+            str = "Error: packet length is not matched!";
+            goto _failed;
+        }
+
+        const StpL3Header *pkg = (const StpL3Header *)&packet[1];
+        if (pkg->minor != minor_) {
             str = "Error: minor number is not matched!";
             goto _failed;
         }
-        if (len < 3 || (len == 3 && packet[2] != 0)) {
-            str = "Error: packet length is not matched or result error!";
-            goto _failed;
-        }
-        if (len >= 4) {
+
+        datalen = Netbuffer::ToCpu16(pkg->length);
+        if (datalen == 1) {
+            if (pkg->data[0]) {
+                str = "Error: Result error!";
+                goto _failed;
+            }
+        } else {
             if (recv_fn_) {
-                quint16 data_len = Netbuffer::ByteToCpu16(&packet[2]);
-                if (!(this->*recv_fn_)(&packet[4], data_len)) {
+                if (!(this->*recv_fn_)(&packet[4], datalen)) {
                     str = "Error: data packet is invalid\n";
                     goto _failed;
                 }

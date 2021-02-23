@@ -13,6 +13,15 @@ message Call {
     
 }
 
+message CallSync {
+    enum State {
+        ANSWER  = 1;
+        REJECT  = 2;
+        SPEAKER = 3;
+    }
+    required State call_state = 1;
+}
+
 message Message {
     required proto.time.UnixTimestamp timestamp = 1; //Time stamp
     enum Type {
@@ -20,12 +29,18 @@ message Message {
         FACEBOOK  = 1; /* Facebook message */
         WECHAT    = 2;
         QQ        = 3;
+        WHATSAPP  = 4;
+        MESSENGER = 5;
+        TWITTER   = 6;
+        LINKEDIN  = 7;
+        INSTAGRAM = 8;
     }
     required Type type = 2 [default = TEXT];
     required string phone = 3; //Phone number
     required string text = 4;  //Message text
     optional string people = 5; //Contact name
 }
+
 
 message Battery {
     required uint32 percent = 1; //Low power threshold

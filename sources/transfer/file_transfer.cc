@@ -95,7 +95,7 @@ void FileTransfer::ResetOTAHeader(const QFile &file)
 void FileTransfer::OnTimeout()
 {
     if (tx_retry_ > 0) {
-        observer_.Notify(FileTransfer::TRANSFER_SHOW_RETX_PACKET, txbuf_);
+        Notify(FileTransfer::TRANSFER_SHOW_RETX_PACKET, txbuf_);
         master_->Send(*txbuf_);
         tx_retry_--;
     } else {
@@ -113,7 +113,7 @@ void FileTransfer::FileMessageProcess(QByteArray *buf)
     if (timer_->isActive())
         timer_->stop();
 
-    observer_.Notify(FileTransfer::TRANSFER_SHOW_RX_PACKET, buf);
+    Notify(FileTransfer::TRANSFER_SHOW_RX_PACKET, buf);
     if (stp_->ProcessMessage(*buf)) {
         if (ReceiveProcess(buf))
             return;
@@ -148,24 +148,34 @@ bool FileTransfer::SendProcess(void)
         tx_retry_ = 2;
         timer_->setSingleShot(true);
         timer_->start(3000);
-        observer_.Notify(FileTransfer::TRANSFER_SHOW_TX_PACKET, txbuf_);
+        Notify(FileTransfer::TRANSFER_SHOW_TX_PACKET, txbuf_);
         return true;
     }
 
-    observer_.Notify(FileTransfer::TRANSFER_PORT_CLOSED, nullptr);
+    Notify(FileTransfer::TRANSFER_PORT_CLOSED, nullptr);
     return false;
 }
 
 bool FileTransfer::GenerateReceive(QByteArray *buf, quint8 match_code)
 {
-    quint16 len;
-    const quint8 *packet = stp_->ToL2(*buf, &len);
+    quint16 pkglen;
+    const quint8 *packet = stp_->ToL2(*buf, &pkglen);
     if (packet[0] != STP_OTA_CLASS)
         return false;
-    if (len != 3)
+
+    if (pkglen <= 4)
         return false;
-    if (packet[1] != match_code || packet[2] != 0)
+
+    StpL3Header *pkg = (StpL3Header *)&packet[1];
+    if (pkg->minor != match_code)
         return false;
+
+    if (Netbuffer::ToCpu16(pkg->length) != 1)
+        return false;
+
+    if (pkg->data[0] != 0)
+        return false;
+
     return true;
 }
 
@@ -344,7 +354,7 @@ bool FileSendState::Send(FileTransfer *context)
     context->file_sent_size_ += ret;
     context->ota_->seqno++;
     context->file_percent_ = context->ota_->seqno * 100 / context->ota_->maxno;
-    context->observer_.Notify(FileTransfer::TRANSFER_SHOW_PROGRESS,
+    context->Notify(FileTransfer::TRANSFER_SHOW_PROGRESS,
                               &context->file_percent_);
     stp->AppendMessage(OTA_FILE_DATA, buffer, pkglen);
     stp->GeneratePacket(STP_OTA_CLASS, 0, txbuf);
@@ -382,11 +392,11 @@ bool FileStopState::Send(FileTransfer *context)
 bool FileStopState::Receive(FileTransfer *context, QByteArray *buf)
 {
     if (context->GenerateReceive(buf, OTA_FILE_CMP)) {
-        context->observer_.Notify(FileTransfer::TRANSFER_FINISHED, nullptr);
+        context->Notify(FileTransfer::TRANSFER_FINISHED, nullptr);
         return true;
     }
 
-    context->observer_.Notify(FileTransfer::TRANSFER_FAILED, nullptr);
+    context->Notify(FileTransfer::TRANSFER_FAILED, nullptr);
     return false;
 }
 

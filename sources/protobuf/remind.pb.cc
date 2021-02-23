@@ -20,6 +20,10 @@ class CallDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Call> _instance;
 } _Call_default_instance_;
+class CallSyncDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<CallSync> _instance;
+} _CallSync_default_instance_;
 class MessageDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Message> _instance;
@@ -56,6 +60,19 @@ static void InitDefaultsscc_info_Call_remind_2eproto() {
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_Call_remind_2eproto}, {
       &scc_info_UnixTimestamp_time_2eproto.base,}};
 
+static void InitDefaultsscc_info_CallSync_remind_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::remind::_CallSync_default_instance_;
+    new (ptr) ::remind::CallSync();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_CallSync_remind_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_CallSync_remind_2eproto}, {}};
+
 static void InitDefaultsscc_info_Message_remind_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -70,8 +87,8 @@ static void InitDefaultsscc_info_Message_remind_2eproto() {
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_Message_remind_2eproto}, {
       &scc_info_UnixTimestamp_time_2eproto.base,}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_remind_2eproto[3];
-static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_remind_2eproto[1];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_remind_2eproto[4];
+static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_remind_2eproto[2];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_remind_2eproto = nullptr;
 
 const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_remind_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -86,6 +103,13 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_remind_2eproto::offsets[] PROT
   2,
   0,
   1,
+  PROTOBUF_FIELD_OFFSET(::remind::CallSync, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::remind::CallSync, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::remind::CallSync, call_state_),
+  0,
   PROTOBUF_FIELD_OFFSET(::remind::Message, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::remind::Message, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -111,12 +135,14 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_remind_2eproto::offsets[] PROT
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 8, sizeof(::remind::Call)},
-  { 11, 21, sizeof(::remind::Message)},
-  { 26, 32, sizeof(::remind::Battery)},
+  { 11, 17, sizeof(::remind::CallSync)},
+  { 18, 28, sizeof(::remind::Message)},
+  { 33, 39, sizeof(::remind::Battery)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::remind::_Call_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::remind::_CallSync_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::remind::_Message_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::remind::_Battery_default_instance_),
 };
@@ -125,35 +151,64 @@ const char descriptor_table_protodef_remind_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "\n\014remind.proto\022\006remind\032\ntime.proto\"S\n\004Ca"
   "ll\022,\n\ttimestamp\030\001 \002(\0132\031.proto.time.UnixT"
   "imestamp\022\r\n\005phone\030\002 \002(\t\022\016\n\006people\030\003 \001(\t\""
-  "\302\001\n\007Message\022,\n\ttimestamp\030\001 \002(\0132\031.proto.t"
-  "ime.UnixTimestamp\022(\n\004type\030\002 \002(\0162\024.remind"
-  ".Message.Type:\004TEXT\022\r\n\005phone\030\003 \002(\t\022\014\n\004te"
-  "xt\030\004 \002(\t\022\016\n\006people\030\005 \001(\t\"2\n\004Type\022\010\n\004TEXT"
-  "\020\000\022\014\n\010FACEBOOK\020\001\022\n\n\006WECHAT\020\002\022\006\n\002QQ\020\003\"\032\n\007"
-  "Battery\022\017\n\007percent\030\001 \002(\rB\002H\001"
+  "d\n\010CallSync\022*\n\ncall_state\030\001 \002(\0162\026.remind"
+  ".CallSync.State\",\n\005State\022\n\n\006ANSWER\020\001\022\n\n\006"
+  "REJECT\020\002\022\013\n\007SPEAKER\020\003\"\211\002\n\007Message\022,\n\ttim"
+  "estamp\030\001 \002(\0132\031.proto.time.UnixTimestamp\022"
+  "(\n\004type\030\002 \002(\0162\024.remind.Message.Type:\004TEX"
+  "T\022\r\n\005phone\030\003 \002(\t\022\014\n\004text\030\004 \002(\t\022\016\n\006people"
+  "\030\005 \001(\t\"y\n\004Type\022\010\n\004TEXT\020\000\022\014\n\010FACEBOOK\020\001\022\n"
+  "\n\006WECHAT\020\002\022\006\n\002QQ\020\003\022\014\n\010WHATSAPP\020\004\022\r\n\tMESS"
+  "ENGER\020\005\022\013\n\007TWITTER\020\006\022\014\n\010LINKEDIN\020\007\022\r\n\tIN"
+  "STAGRAM\020\010\"\032\n\007Battery\022\017\n\007percent\030\001 \002(\rB\002H"
+  "\001"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_remind_2eproto_deps[1] = {
   &::descriptor_table_time_2eproto,
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_remind_2eproto_sccs[3] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_remind_2eproto_sccs[4] = {
   &scc_info_Battery_remind_2eproto.base,
   &scc_info_Call_remind_2eproto.base,
+  &scc_info_CallSync_remind_2eproto.base,
   &scc_info_Message_remind_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_remind_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_remind_2eproto = {
-  false, false, descriptor_table_protodef_remind_2eproto, "remind.proto", 348,
-  &descriptor_table_remind_2eproto_once, descriptor_table_remind_2eproto_sccs, descriptor_table_remind_2eproto_deps, 3, 1,
+  false, false, descriptor_table_protodef_remind_2eproto, "remind.proto", 521,
+  &descriptor_table_remind_2eproto_once, descriptor_table_remind_2eproto_sccs, descriptor_table_remind_2eproto_deps, 4, 1,
   schemas, file_default_instances, TableStruct_remind_2eproto::offsets,
-  file_level_metadata_remind_2eproto, 3, file_level_enum_descriptors_remind_2eproto, file_level_service_descriptors_remind_2eproto,
+  file_level_metadata_remind_2eproto, 4, file_level_enum_descriptors_remind_2eproto, file_level_service_descriptors_remind_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
 static bool dynamic_init_dummy_remind_2eproto = (static_cast<void>(::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_remind_2eproto)), true);
 namespace remind {
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Message_Type_descriptor() {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CallSync_State_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_remind_2eproto);
   return file_level_enum_descriptors_remind_2eproto[0];
+}
+bool CallSync_State_IsValid(int value) {
+  switch (value) {
+    case 1:
+    case 2:
+    case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+constexpr CallSync_State CallSync::ANSWER;
+constexpr CallSync_State CallSync::REJECT;
+constexpr CallSync_State CallSync::SPEAKER;
+constexpr CallSync_State CallSync::State_MIN;
+constexpr CallSync_State CallSync::State_MAX;
+constexpr int CallSync::State_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Message_Type_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_remind_2eproto);
+  return file_level_enum_descriptors_remind_2eproto[1];
 }
 bool Message_Type_IsValid(int value) {
   switch (value) {
@@ -161,6 +216,11 @@ bool Message_Type_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
       return true;
     default:
       return false;
@@ -172,6 +232,11 @@ constexpr Message_Type Message::TEXT;
 constexpr Message_Type Message::FACEBOOK;
 constexpr Message_Type Message::WECHAT;
 constexpr Message_Type Message::QQ;
+constexpr Message_Type Message::WHATSAPP;
+constexpr Message_Type Message::MESSENGER;
+constexpr Message_Type Message::TWITTER;
+constexpr Message_Type Message::LINKEDIN;
+constexpr Message_Type Message::INSTAGRAM;
 constexpr Message_Type Message::Type_MIN;
 constexpr Message_Type Message::Type_MAX;
 constexpr int Message::Type_ARRAYSIZE;
@@ -521,6 +586,218 @@ void Call::InternalSwap(Call* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Call::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+class CallSync::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CallSync>()._has_bits_);
+  static void set_has_call_state(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000001) ^ 0x00000001) != 0;
+  }
+};
+
+CallSync::CallSync(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:remind.CallSync)
+}
+CallSync::CallSync(const CallSync& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _has_bits_(from._has_bits_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  call_state_ = from.call_state_;
+  // @@protoc_insertion_point(copy_constructor:remind.CallSync)
+}
+
+void CallSync::SharedCtor() {
+  call_state_ = 1;
+}
+
+CallSync::~CallSync() {
+  // @@protoc_insertion_point(destructor:remind.CallSync)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void CallSync::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void CallSync::ArenaDtor(void* object) {
+  CallSync* _this = reinterpret_cast< CallSync* >(object);
+  (void)_this;
+}
+void CallSync::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void CallSync::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const CallSync& CallSync::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_CallSync_remind_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void CallSync::Clear() {
+// @@protoc_insertion_point(message_clear_start:remind.CallSync)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  call_state_ = 1;
+  _has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CallSync::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // required .remind.CallSync.State call_state = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          if (PROTOBUF_PREDICT_TRUE(::remind::CallSync_State_IsValid(val))) {
+            _internal_set_call_state(static_cast<::remind::CallSync_State>(val));
+          } else {
+            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(1, val, mutable_unknown_fields());
+          }
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  _has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* CallSync::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:remind.CallSync)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _has_bits_[0];
+  // required .remind.CallSync.State call_state = 1;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
+      1, this->_internal_call_state(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:remind.CallSync)
+  return target;
+}
+
+size_t CallSync::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:remind.CallSync)
+  size_t total_size = 0;
+
+  // required .remind.CallSync.State call_state = 1;
+  if (_internal_has_call_state()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_call_state());
+  }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void CallSync::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:remind.CallSync)
+  GOOGLE_DCHECK_NE(&from, this);
+  const CallSync* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<CallSync>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:remind.CallSync)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:remind.CallSync)
+    MergeFrom(*source);
+  }
+}
+
+void CallSync::MergeFrom(const CallSync& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:remind.CallSync)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_call_state()) {
+    _internal_set_call_state(from._internal_call_state());
+  }
+}
+
+void CallSync::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:remind.CallSync)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CallSync::CopyFrom(const CallSync& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:remind.CallSync)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CallSync::IsInitialized() const {
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
+  return true;
+}
+
+void CallSync::InternalSwap(CallSync* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  swap(_has_bits_[0], other->_has_bits_[0]);
+  swap(call_state_, other->call_state_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CallSync::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -1182,6 +1459,9 @@ void Battery::InternalSwap(Battery* other) {
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::remind::Call* Arena::CreateMaybeMessage< ::remind::Call >(Arena* arena) {
   return Arena::CreateMessageInternal< ::remind::Call >(arena);
+}
+template<> PROTOBUF_NOINLINE ::remind::CallSync* Arena::CreateMaybeMessage< ::remind::CallSync >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::remind::CallSync >(arena);
 }
 template<> PROTOBUF_NOINLINE ::remind::Message* Arena::CreateMaybeMessage< ::remind::Message >(Arena* arena) {
   return Arena::CreateMessageInternal< ::remind::Message >(arena);
