@@ -62,6 +62,8 @@ void TransferController::Update(int action, void *ptr)
         view_->ShowTransferProcess(*(quint32 *)ptr);
         break;
     case FileTransfer::TRANSFER_SHOW_TX_PACKET: {
+        if (!view_->DebugEnabled())
+            return;
         const QByteArray *ba = (const QByteArray *)ptr;
         QByteArray str(ba->toHex(' ').toUpper());
         view_->ShowText("Send Packet: ");
@@ -69,6 +71,8 @@ void TransferController::Update(int action, void *ptr)
         }
         break;
     case FileTransfer::TRANSFER_SHOW_RX_PACKET: {
+        if (!view_->DebugEnabled())
+            return;
         const QByteArray *ba = (const QByteArray *)ptr;
         QByteArray str(ba->toHex(' ').toUpper());
         view_->ShowText("Receive Packet: ");

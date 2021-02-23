@@ -26,6 +26,7 @@ public:
     void SetProgressBarStatus(bool visible);
     void ShowText(const QString &text);
     void SetModel(FileTransfer *model);
+    bool DebugEnabled() const;
 
 protected:
     void closeEvent(QCloseEvent* ev) override;

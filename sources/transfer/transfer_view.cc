@@ -95,3 +95,8 @@ void TransferView::SetModel(FileTransfer *model)
 {
     model_ = model;
 }
+
+bool TransferView::DebugEnabled() const
+{
+    return ui_.checkbox_debug_->isChecked();
+}

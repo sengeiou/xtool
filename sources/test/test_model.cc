@@ -131,7 +131,7 @@ bool TestModel::ReceiveProcess(QByteArray *buf)
             }
         } else {
             if (recv_fn_) {
-                if (!(this->*recv_fn_)(&packet[4], datalen)) {
+                if (!(this->*recv_fn_)(pkg->data, datalen)) {
                     str = "Error: data packet is invalid\n";
                     goto _failed;
                 }
