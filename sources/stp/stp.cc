@@ -68,12 +68,13 @@ bool StpOpcode::ConfirmRequest(const StpHeader *header)
 
 void StpOpcode::AppendMessage(int minor, const char *data, quint16 len)
 {
+    quint16 dlen = OPC_LEN(len);
     union {
        quint16 len;
        char buf[2];
     } m;
 
-    if (len+3 > nbuf_.remain())
+    if (dlen+3 > nbuf_.remain())
         return;
 
     char mr = static_cast<char>(minor);
@@ -81,8 +82,8 @@ void StpOpcode::AppendMessage(int minor, const char *data, quint16 len)
     nbuf_.AddU8(mr);
     nbuf_.AddU8(m.buf[0]);
     nbuf_.AddU8(m.buf[1]);
-    if (len > 0)
-        nbuf_.AddMemory(data, len);
+    if (dlen > 0)
+        nbuf_.AddMemory(data, dlen);
 }
 
 void StpOpcode::AppendHeader(int cls, quint16 flags)

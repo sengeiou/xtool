@@ -48,26 +48,33 @@ bool TestModel::StartCalling(const QString &name, const QString &phone)
     calling.set_people(name.toStdString());
     calling.SerializeToArray(buffer, calling.ByteSizeLong());
     SetReceiveProcess(nullptr);
-    return SendPacket(STP_CALL_CLASS, 0x01, buffer, (quint16)calling.ByteSizeLong());
+    return SendPacket(STP_CALL_CLASS, 0x01, buffer, OPC_DLEN(calling.ByteSizeLong()));
 }
 
 bool TestModel::SendTextMessage(const QString &name, const QString &phone, int type,
                                 const QString &text)
 {
-    ::proto::time::UnixTimestamp *timestamp = new proto::time::UnixTimestamp();
+    proto::time::UnixTimestamp *timestamp = new proto::time::UnixTimestamp();
     QDateTime time = QDateTime::currentDateTime();
     remind::Message message;
     char buffer[256];
 
     timestamp->set_time(time.toTime_t());
     message.set_allocated_timestamp(timestamp);
-    message.set_phone(phone.toStdString());
-    message.set_people(name.toStdString());
+    if (type == remind::Message_Type_TEXT) {
+        message.set_chat(text.toStdString());
+        message.set_phone(phone.toStdString());
+        message.set_user(name.toStdString());
+    } else {
+        message.set_chat(text.toStdString());
+        message.set_user(name.toStdString());
+    }
+    message.set_maxno(1);
+    message.set_curno(1);
     message.set_type((remind::Message::Type)type);
-    message.set_text(text.toStdString());
     message.SerializeToArray(buffer, message.ByteSizeLong());
     SetReceiveProcess(nullptr);
-    return SendPacket(STP_REMIND_CLASS, 0x01, buffer, (quint16)message.ByteSizeLong());
+    return SendPacket(STP_REMIND_CLASS, 0x01, buffer, OPC_DLEN(message.ByteSizeLong()));
 }
 
 bool TestModel::ReadDeviceInformation(void)
@@ -124,14 +131,14 @@ bool TestModel::ReceiveProcess(QByteArray *buf)
         }
 
         datalen = Netbuffer::ToCpu16(pkg->length);
-        if (datalen == 1) {
+        if (datalen & OPC_SCODE) {
             if (pkg->data[0]) {
                 str = "Error: Result error!";
                 goto _failed;
             }
         } else {
             if (recv_fn_) {
-                if (!(this->*recv_fn_)(pkg->data, datalen)) {
+                if (!(this->*recv_fn_)(pkg->data, OPC_LEN(datalen))) {
                     str = "Error: data packet is invalid\n";
                     goto _failed;
                 }

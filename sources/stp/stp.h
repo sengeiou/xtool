@@ -10,8 +10,10 @@
 #define STP_OTA_CLASS     0x01
 #define STP_INFO_CLASS    0x02
 #define STP_SETTING_CLASS 0x03
-#define STP_CALL_CLASS    0x07
+#define STP_GPS_CLASS     0x07
 #define STP_REMIND_CLASS  0x08
+#define STP_CALL_CLASS    0x09
+
 
 #pragma pack(1)
 struct OTAHeader {
@@ -30,6 +32,11 @@ struct OTAHeader {
 struct StpL3Header {
     quint8 minor;
     quint16 length;
+#define OPC_LEN(len) ((len) & OPC_LENMASK)
+#define OPC_LENMASK  0x0FFF
+#define OPC_SCODE    0x1000
+#define OPC_SLEN(len) (OPC_LEN(len) | OPC_SCODE) /* Status code with lenght */
+#define OPC_DLEN(len) ((quint16)(len)) /* */
     quint8 data[];
 };
 
